@@ -8,6 +8,7 @@ The API for HabitRPG to use in other JAVA/Android Project...
 To use HabitRPGJavaAPI, you first need to import the library to your project. The project is pretty easy to use: you have different class that represents either the items or the user,
 and you have the classes that allows you to interact with the API. For example now, if you want to retrieve an user an its associated tasks.
 
+```java
 //Create a new config
 HostConfig config = new HostConfig("https://habitrpg.com/","80","myAPIkey","myUSERkey");
 //Create a callback
@@ -47,4 +48,4 @@ Answer as = getUser.getData();
 //If there is an answer, parse the information. It will call the callback automatically...
 if(as!=null)
 	as.parse();
-	
+```
