@@ -2,15 +2,26 @@ package com.magicmicky.habitrpgmobileapp.habits;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Contains the User that uses the application.
+ * @author MagicMicky 
+ *
+ */
 public class User {
 	private List<HabitItem> items;
 	private String name;
 	private double hp,maxHp,xp, maxXp,gp;
 	private int lvl;
+	/**
+	 * Create a new User
+	 */
 	public User() {
 		this(new ArrayList<HabitItem>());
 	}
+	/**
+	 * Create a new User based on a list of HabitItem
+	 * @param items the user's list of items
+	 */
 	public User(List<HabitItem> items) {
 		this.setItems(items);
 	}
@@ -27,7 +38,7 @@ public class User {
 		this.items = items;
 	}
 	/**
-	 * @return the name
+	 * @return the user's name
 	 */
 	public String getName() {
 		return name;
@@ -39,7 +50,7 @@ public class User {
 		this.name = name;
 	}
 	/**
-	 * @return the hp
+	 * @return the user's hp
 	 */
 	public double getHp() {
 		return hp;
@@ -51,7 +62,7 @@ public class User {
 		this.hp = hp;
 	}
 	/**
-	 * @return the maxHp
+	 * @return the user's maxHp
 	 */
 	public double getMaxHp() {
 		return maxHp;
@@ -63,7 +74,7 @@ public class User {
 		this.maxHp = maxHp;
 	}
 	/**
-	 * @return the xp
+	 * @return the user's xp
 	 */
 	public double getXp() {
 		return xp;
@@ -75,7 +86,7 @@ public class User {
 		this.xp = d;
 	}
 	/**
-	 * @return the maxXp
+	 * @return the user's maxXp
 	 */
 	public double getMaxXp() {
 		return maxXp;
@@ -87,7 +98,7 @@ public class User {
 		this.maxXp = maxXp;
 	}
 	/**
-	 * @return the lvl
+	 * @return the user's lvl
 	 */
 	public int getLvl() {
 		return lvl;
@@ -99,7 +110,7 @@ public class User {
 		this.lvl = lvl;
 	}
 	/**
-	 * @return the gp
+	 * @return the user's gp
 	 */
 	public double getGp() {
 		return gp;

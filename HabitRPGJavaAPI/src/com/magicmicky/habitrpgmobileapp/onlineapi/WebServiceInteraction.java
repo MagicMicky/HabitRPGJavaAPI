@@ -20,12 +20,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * The main class that do the interaction with the webservice.
+ * @author Mickael
+ *
+ */
 public abstract class WebServiceInteraction {
-//	final private static String WEBSERVICE_URL = "https://beta.habitrpg.com/api/v1/";
 	final private static String SUFFIX = "api/v1/";
-//	final private static String API_KEY ="b89ef880-7e07-4d13-8a5f-b6be25437fd8";
-//	final private static String USER_KEY = "710f41f1-4113-4d8a-9714-79a84edd6175";
 	final private String CMD;
 	final private OnHabitsAPIResult callback;
 	private HostConfig config;
@@ -35,6 +36,7 @@ public abstract class WebServiceInteraction {
 	 * Create a new WebServiceInteraction based on a command, and a callback to call once finished
 	 * @param command the command to GET
 	 * @param callback the callback to call with the different information about the user
+	 * @param config the host configuration
 	 */
 	public WebServiceInteraction(String command, OnHabitsAPIResult callback, HostConfig config) {
 		this.CMD = command;
@@ -43,7 +45,7 @@ public abstract class WebServiceInteraction {
 	}
 	
 	/**
-	 * Get the data from the WEBSERVICE
+	 * Get the data from the WebService
 	 * @return the {@link Answer}
 	 */
 	public final Answer getData() {
@@ -54,7 +56,7 @@ public abstract class WebServiceInteraction {
 	            HttpClient client = new DefaultHttpClient();
 	            HttpRequestBase request = this.getRequest();
 	            String address = config.getAddress();
-	            address = address.concat(address.charAt(address.length()-1) == '/' ? "api/v1/" + this.CMD : "/api/v1/" + this.CMD);
+	            address = address.concat(address.charAt(address.length()-1) == '/' ? SUFFIX + this.CMD : "/api/v1/" + this.CMD);
 
 	            request.setURI(new URI(address));
 	            request.addHeader("x-api-key", config.getApi());
@@ -104,12 +106,12 @@ public abstract class WebServiceInteraction {
 	    }
 	/**
 	 * Return the request pre filled with misc data (POST, GET, PUT, DELETE...)
-	 * @return
+	 * @return the HttpRequest which is going to be used
 	 */
 	protected abstract HttpRequestBase getRequest();
 
 	/**
-	 * Find the Answer based on a JSONObject
+	 * Retrieve the Answer based on a JSONObject
 	 * @param answer the JSONObject to parse
 	 * @return the answer object, fulfilled with the information
 	 */
@@ -122,7 +124,8 @@ public abstract class WebServiceInteraction {
 		return callback;
 	}
 	/**
-	 * The Answer Type. Contains a Answer, and is used to parse the JSON and call {@code callback} with the information
+	 * The Answer Type.<br/>
+	 * Is used to parse the JSON and call {@code callback} with the information
 	 * @author MagicMicky
 	 */
 	public abstract class Answer {

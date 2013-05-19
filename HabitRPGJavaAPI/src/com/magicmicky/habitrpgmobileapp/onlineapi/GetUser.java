@@ -10,8 +10,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.magicmicky.habitrpgmobileapp.habits.*;
+
+/**
+ * Retrieve all the user's information from the web
+ * @author MagicMicky
+ * @see OnHabitsAPIResult#onUserReceived(User)
+ */
 public class GetUser extends WebServiceInteraction {
 	private final static String command = "user/";
+	/**
+	 * Create a new GetUser Request, based on a callback (that will be called at the end), and a HostConfig
+	 * @param callback the callback to call once we have retrieved the user
+	 * @param config the Config of the server to call
+	 */
 	public GetUser(OnHabitsAPIResult callback, HostConfig config) {
 		super(command, callback,config);
 	}
@@ -24,7 +35,12 @@ public class GetUser extends WebServiceInteraction {
 	@Override
 	protected HttpRequestBase getRequest() {
 		return new HttpGet();
-	}	
+	}
+	/**
+	 * Parse the information about the User
+	 * @author MagicMicky
+	 *
+	 */
 	private class UserData extends Answer {
 		private static final String TAG_DAILIESID = "dailyIds";
 		private static final String TAG_HABITSID = "habitIds";
@@ -54,9 +70,16 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_AUTH_LOCAL_UNAME = "username";
 			private static final String TAG_AUTH_FACEBOOK = "facebook";
 			private static final String TAG_AUTH_FACEBOOK_DISPLAYNAME = "displayName";
+		
+		/**
+		 * Create a new UserData based on a JSONObject to parse, and a callback to call
+		 * @param obj the json that contains the user's values
+		 * @param callback the callback to call when the information is parsed
+		 */
 		public UserData(JSONObject obj, OnHabitsAPIResult callback) {
 			super(obj, callback);
 		}
+
 
 		@Override
 		public void parse() {

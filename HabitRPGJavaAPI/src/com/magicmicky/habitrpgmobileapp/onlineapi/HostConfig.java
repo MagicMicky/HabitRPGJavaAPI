@@ -1,11 +1,21 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
-
+/**
+ * The configuration of the host<br />
+ * Currently, the Port isn't used at all.
+ * @author MagicMicky
+ */
 public class HostConfig {
 	private String address;
 	private String port;
 	private String api;
 	private String user;
-
+	/**
+	 * Create a new HostConfig
+	 * @param address the address of the server
+	 * @param port the port of the server
+	 * @param api the API token of the user
+	 * @param user the user ID
+	 */
 	public HostConfig(String address, String port, String api, String user) {
 		this.setAddress(address);
 		this.setPort(port);

@@ -1,13 +1,24 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
-
+/**
+ * Custom Item that regroup all the others.
+ * @author MagicMicky
+ *
+ */
 public abstract class HabitItem {
 	private String id;
 	private String notes;
 	private String priority;
 	private String text;
 	private double value;
-	
+	/**
+	 * Create a new HabitItem from what is necessary
+	 * @param id the id of the habit
+	 * @param notes the notes associated to a habit
+	 * @param priority the priority of the habit
+	 * @param text the text of the habit
+	 * @param value the value (points) of the habit
+	 */
 	public HabitItem(String id, String notes, String priority, String text, double value) {
 		this.setId(id);
 		this.setNotes(notes);

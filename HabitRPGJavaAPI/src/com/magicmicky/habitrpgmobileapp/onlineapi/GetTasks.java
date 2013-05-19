@@ -3,7 +3,10 @@ package com.magicmicky.habitrpgmobileapp.onlineapi;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONObject;
-
+/**
+ * Retrieves the list of tasks from the API
+ * @author MagicMicky
+ */
 public class GetTasks extends WebServiceInteraction{
 
 	public GetTasks(String command,JSONObject obj, OnHabitsAPIResult callback, HostConfig config) {
