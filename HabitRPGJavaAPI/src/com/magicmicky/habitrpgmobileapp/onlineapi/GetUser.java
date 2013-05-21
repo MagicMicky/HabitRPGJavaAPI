@@ -1,5 +1,6 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.magicmicky.habitrpgmobileapp.habits.*;
+
 
 /**
  * Retrieve all the user's information from the web
@@ -70,7 +72,19 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_AUTH_LOCAL_UNAME = "username";
 			private static final String TAG_AUTH_FACEBOOK = "facebook";
 			private static final String TAG_AUTH_FACEBOOK_DISPLAYNAME = "displayName";
-		
+		private static final String TAG_PREFS = "preferences";
+			private static final String TAG_PREFS_GENDER = "gender";
+			private static final String TAG_PREFS_SKIN = "skin";
+			private static final String TAG_PREFS_HAIR = "hair";
+			private static final String TAG_PREFS_ARMORSET = "armorSet";
+			private static final String TAG_PREFS_SHOWHELM = "showHelm";
+		private static final String TAG_ITEMS = "items";
+			private static final String TAG_ITEMS_ARMOR = "armor";
+			private static final String TAG_ITEMS_HEAD = "head";
+			private static final String TAG_ITEMS_SHIELD = "shield";
+			private static final String TAG_ITEMS_WEAPON = "weapon";
+			private static final String TAG_ITEMS_PETS = "pets";
+
 		/**
 		 * Create a new UserData based on a JSONObject to parse, and a callback to call
 		 * @param obj the json that contains the user's values
@@ -86,8 +100,32 @@ public class GetUser extends WebServiceInteraction {
 			User user = new User();;
 			this.parseHabits(user);
 			this.parseUserInfos(user);
+			this.parseUserLook(user);
 			callback.onUserReceived(user);
 		}
+		private void parseUserLook(User user) {
+			try {
+				UserLook look = new UserLook();
+				JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
+				look.setGender(prefs.getString(TAG_PREFS_GENDER));
+				look.setSkin(prefs.getString(TAG_PREFS_SKIN));
+				look.setHair(prefs.getString(TAG_PREFS_HAIR));
+				look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
+				look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+				
+				JSONObject items = this.getObject().getJSONObject(TAG_ITEMS);
+				look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
+				look.setHead(items.getInt(TAG_ITEMS_HEAD));
+				look.setShield(items.getInt(TAG_ITEMS_SHIELD));
+				look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
+				user.setLook(look);
+				System.out.println(look);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+
 		/**
 		 * Parse the different habits of an user
 		 * @param user the user to put the information in

@@ -12,6 +12,7 @@ public class User {
 	private String name;
 	private double hp,maxHp,xp, maxXp,gp;
 	private int lvl;
+	private UserLook look;
 	/**
 	 * Create a new User
 	 */
@@ -120,5 +121,17 @@ public class User {
 	 */
 	public void setGp(double gp) {
 		this.gp = gp;
+	}
+	/**
+	 * @return the look
+	 */
+	public UserLook getLook() {
+		return look;
+	}
+	/**
+	 * @param look the look to set
+	 */
+	public void setLook(UserLook look) {
+		this.look = look;
 	}
 }
