@@ -148,14 +148,14 @@ public abstract class WebServiceInteraction {
 		/**
 		 * @return the object
 		 */
-		public JSONObject getObject() {
+		protected JSONObject getObject() {
 			return object;
 		}
 
 		/**
 		 * @param object the object to set
 		 */
-		public void setObject(JSONObject object) {
+		protected void setObject(JSONObject object) {
 			this.object = object;
 		}
 	}

@@ -1,5 +1,9 @@
 package com.magicmicky.habitrpgmobileapp.habits;
-
+/**
+ * Class storing a user look.
+ * @author MagicMicky
+ *
+ */
 public class UserLook {
 	private String gender;
 	private String hair;
@@ -7,7 +11,7 @@ public class UserLook {
 	private String armorSet;
 	private boolean showHelm;
 	
-	/**
+	/*
 	 * items
 	 */
 	private int armor;
@@ -30,36 +34,39 @@ public class UserLook {
 		
 	}
 	/**
-	 * @return the gender
+	 * @return the gender of the user
 	 */
 	public String getGender() {
 		return gender;
 	}
 	/**
+	 * Gender should be either "m" or "f"
 	 * @param gender the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
 	/**
-	 * @return the hair
+	 * @return the hair of the user.
 	 */
 	public String getHair() {
 		return hair;
 	}
 	/**
+	 * Hair can be either "blond", "brown", "black" or "white" 
 	 * @param hair the hair to set
 	 */
 	public void setHair(String hair) {
 		this.hair = hair;
 	}
 	/**
-	 * @return the skin
+	 * @return the skin of the user
 	 */
 	public String getSkin() {
 		return skin;
 	}
 	/**
+	 * Skin should be either "orc", "asian", "black", "white", "dead"
 	 * @param skin the skin to set
 	 */
 	public void setSkin(String skin) {
@@ -72,6 +79,7 @@ public class UserLook {
 		return armorSet;
 	}
 	/**
+	 * The version of the armorSet "v1", or "v2". Should be used to determine the head and the armor for females.
 	 * @param armorSet the armorSet to set
 	 */
 	public void setArmorSet(String armorSet) {
@@ -84,6 +92,7 @@ public class UserLook {
 		return showHelm;
 	}
 	/**
+	 * Whether or not the helm should be shown
 	 * @param showHelm the showHelm to set
 	 */
 	public void setShowHelm(boolean showHelm) {
@@ -96,6 +105,7 @@ public class UserLook {
 		return armor;
 	}
 	/**
+	 * the armor of the user ( a 0-5 value)
 	 * @param armor the armor to set
 	 */
 	public void setArmor(int armor) {
@@ -108,6 +118,7 @@ public class UserLook {
 		return head;
 	}
 	/**
+	 * The helmet of the user (0-5)
 	 * @param head the head to set
 	 */
 	public void setHead(int head) {
@@ -120,6 +131,7 @@ public class UserLook {
 		return shield;
 	}
 	/**
+	 * The shield of the user (0-5 value), 0 being no shield
 	 * @param shield the shield to set
 	 */
 	public void setShield(int shield) {
@@ -132,12 +144,17 @@ public class UserLook {
 		return weapon;
 	}
 	/**
+	 * The weapon of the user (0-6 value)
 	 * @param weapon the weapon to set
 	 */
 	public void setWeapon(int weapon) {
 		this.weapon = weapon;
 	}
+	
 	@Override
+	/**
+	 * Return a string to show the UserLook easily.
+	 */
 	public String toString() {
 		return this.gender + ": armor" + this.armor + " head" + this.head
 				+ " hair" + this.hair + " skin" + this.getSkin()

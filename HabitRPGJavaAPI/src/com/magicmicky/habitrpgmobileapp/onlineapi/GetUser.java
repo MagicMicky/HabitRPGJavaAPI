@@ -103,6 +103,11 @@ public class GetUser extends WebServiceInteraction {
 			this.parseUserLook(user);
 			callback.onUserReceived(user);
 		}
+		
+		/**
+		 * Parses the user look from the JSONObject {@link #getObject()}, and stores it in the user
+		 * @param user
+		 */
 		private void parseUserLook(User user) {
 			try {
 				UserLook look = new UserLook();
@@ -119,7 +124,6 @@ public class GetUser extends WebServiceInteraction {
 				look.setShield(items.getInt(TAG_ITEMS_SHIELD));
 				look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
 				user.setLook(look);
-				System.out.println(look);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
