@@ -91,6 +91,8 @@ public abstract class HabitItem {
 	public void setValue(double value) {
 		this.value = value;
 	}
+	protected abstract String getType();
+	public abstract String getJSONString();
 
 
 }

@@ -28,6 +28,13 @@ public class PostTaskDirection extends WebServiceInteraction {
 	protected Answer findAnswer(JSONObject answer) {
 		return new PostTaskDirectionData(answer, this.getCallback());
 	}
+	
+
+	@Override
+	protected HttpRequestBase getRequest() {
+		return new HttpPost();
+	}
+	
 	/**
 	 * The result returned by the command
 	 * @author MagicMicky
@@ -67,8 +74,4 @@ public class PostTaskDirection extends WebServiceInteraction {
 		
 	}
 
-	@Override
-	protected HttpRequestBase getRequest() {
-		return new HttpPost();
-	}
 }

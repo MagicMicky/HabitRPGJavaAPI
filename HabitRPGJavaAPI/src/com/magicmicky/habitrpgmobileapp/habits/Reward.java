@@ -5,6 +5,7 @@ package com.magicmicky.habitrpgmobileapp.habits;
  *
  */
 public class Reward extends HabitItem{
+	private final static HabitType type = HabitType.reward;
 	/**
 	 * Create a new Reward
 	 * @param id the id of the habit
@@ -16,6 +17,22 @@ public class Reward extends HabitItem{
 	public Reward(String id, String notes, String priority, String text,
 			double value) {
 		super(id, notes, priority, text, value);
+	}
+
+	@Override
+	protected String getType() {
+		return type.toString();
+	}
+
+	@Override
+	public String getJSONString() {
+			StringBuilder json = new StringBuilder();
+			json.append("{\"type\":\"" + this.getType() + "\"," );
+			json.append("\"text\":\"" + this.getText() + "\"," );
+			if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
+				json.append("\"notes\":\"" + this.getNotes() + "\"," );
+			json.append("\"value\":" + this.getValue() + "}" );
+			return json.toString();
 	}
 
 }

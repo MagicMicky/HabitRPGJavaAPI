@@ -134,4 +134,10 @@ public class User {
 	public void setLook(UserLook look) {
 		this.look = look;
 	}
+	/**
+	 * @param task the task to add to this user
+	 */
+	public void addTask(HabitItem task) {
+		this.items.add(task);
+	}
 }

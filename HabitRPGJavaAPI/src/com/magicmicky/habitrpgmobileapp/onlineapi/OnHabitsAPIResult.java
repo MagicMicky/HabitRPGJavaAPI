@@ -1,5 +1,6 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
+import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
 import com.magicmicky.habitrpgmobileapp.habits.User;
 /**
  * This is the callback interface. The functions here are called by the different POST, PUT, GET, and DELETE
@@ -32,5 +33,6 @@ public interface OnHabitsAPIResult {
 	 * @param message an optional error message
 	 */
 	void onError(String message);
+	void onPostTaskAnswer(HabitItem task);
 
 }

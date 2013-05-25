@@ -19,7 +19,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+/*
+ * TODO: when parsing, check that all the stuff are there (like sometimes, no repeat[]...
+ */
 /**
  * The main class that do the interaction with the webservice.
  * @author Mickael
@@ -65,7 +67,8 @@ public abstract class WebServiceInteraction {
 	            
 	            HttpResponse response = client.execute(request);
 	            if(response.getStatusLine().getStatusCode() !=200) {
-	            	throw new Exception("The server didn't answer 200");
+	            	System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
+	            	//throw new Exception("The server didn't answer 200");
 	            }
 	            HttpEntity httpEntity = response.getEntity();
 	            InputStream is = httpEntity.getContent();          
@@ -85,19 +88,25 @@ public abstract class WebServiceInteraction {
 	            }
 	            is.close();
 	            String jsonstr = sb.toString();
+	            System.out.println(jsonstr);
 	            JSONObject jsonObj = new JSONObject(jsonstr);
 	            result = findAnswer(jsonObj);
             } catch (UnsupportedEncodingException e) {
-	            this.callback.onError(null);
+	            this.callback.onError(e.getMessage());
+	            e.printStackTrace();
 	        } catch (ClientProtocolException e) {
-	            this.callback.onError(null);
+	            this.callback.onError(e.getMessage());
+	            e.printStackTrace();
 	        } catch (IOException e) {
-	            this.callback.onError(null);
+	            this.callback.onError(e.getMessage());
+	            e.printStackTrace();
 
 	        } catch (JSONException e) {
-	            this.callback.onError(null);
+	            this.callback.onError(e.getMessage());
+	            e.printStackTrace();
+
 	        } catch (Exception e) {
-	            this.callback.onError(null);
+	            this.callback.onError(e.getMessage());
 	            e.printStackTrace();
 	        }
 	 

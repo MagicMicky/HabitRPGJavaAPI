@@ -6,6 +6,7 @@ package com.magicmicky.habitrpgmobileapp.habits;
  *
  */
 public class ToDo extends HabitItem{
+	private final static HabitType type=HabitType.todo;
 	private boolean completed;
 	private String date;
 	/**
@@ -53,6 +54,24 @@ public class ToDo extends HabitItem{
 	 */
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	@Override
+	protected String getType() {
+		return type.toString();
+	}
+
+	@Override
+	public String getJSONString() {
+		StringBuilder json = new StringBuilder();
+		json.append("{\"type\":\"" + this.getType() + "\"," );
+		json.append("\"text\":\"" + this.getText() + "\"," );
+		json.append("\"value\":0," );
+		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
+			json.append("\"notes\":\"" + this.getNotes() + "\"," );
+		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
+		System.out.println("STRING--" + json.toString());
+		return json.toString();
 	}
 
 }

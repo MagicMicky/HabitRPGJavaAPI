@@ -5,7 +5,7 @@ package com.magicmicky.habitrpgmobileapp.habits;
  * @author MagicMicky
  */
 public class Daily extends HabitItem{
-
+	private final static HabitType type=HabitType.daily;
 	private boolean completed;
 	private boolean[] repeat;
 	/**
@@ -49,6 +49,22 @@ public class Daily extends HabitItem{
 	 */
 	public void setRepeat(boolean[] repeat) {
 		this.repeat = repeat;
+	}
+	@Override
+	protected String getType() {
+		// TODO Auto-generated method stub
+		return type.toString();
+	}
+	@Override
+	public String getJSONString() {
+		StringBuilder json = new StringBuilder();
+		json.append("{\"type\":\"" + this.getType() + "\"," );
+		json.append("\"text\":\"" + this.getText() + "\"," );
+		json.append("\"value\":0," );
+		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
+			json.append("\"notes\":\"" + this.getNotes() + "\"," );
+		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
+		return json.toString();
 	}
 
 

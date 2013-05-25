@@ -142,13 +142,15 @@ public class GetUser extends WebServiceInteraction {
 				for(int i=0;i<dailies.length();i++) {
 					JSONObject habit = tasks.getJSONObject(dailies.getString(i));
 					HabitItem it;
-					boolean[] repeats = new boolean[7];
-					JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
-					for(int j=0;j<7;j++) {
-						repeats[j] = repeatTag.getBoolean(whatDay(j));
-					}
+					boolean[] repeats = {false,false,false,false,false,false,false};
+					if(habit.has(TAG_TASK_REPEAT)) {
+						JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
+						for(int j=0;j<7;j++) {
+							repeats[j] = repeatTag.getBoolean(whatDay(j));
+						}
+						}
 					it = new Daily(habit.getString(TAG_TASK_ID)
-							, habit.getString(TAG_TASK_NOTES)
+							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
 							, habit.getDouble(TAG_TASK_VALUE)
@@ -161,7 +163,7 @@ public class GetUser extends WebServiceInteraction {
 					JSONObject habit = tasks.getJSONObject(todo.getString(i));
 					HabitItem it;
 					it = new ToDo(habit.getString(TAG_TASK_ID)
-							, habit.getString(TAG_TASK_NOTES)
+							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
 							, habit.getDouble(TAG_TASK_VALUE)
@@ -174,7 +176,7 @@ public class GetUser extends WebServiceInteraction {
 					JSONObject habit= tasks.getJSONObject(habitH.getString(i));
 					HabitItem it;
 					it = new Habit(habit.getString(TAG_TASK_ID)
-							, habit.getString(TAG_TASK_NOTES)
+							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
 							, habit.getDouble(TAG_TASK_VALUE)
@@ -187,7 +189,7 @@ public class GetUser extends WebServiceInteraction {
 					JSONObject habit= tasks.getJSONObject(reward.getString(i));
 					HabitItem it;
 					it = new Reward(habit.getString(TAG_TASK_ID)
-							, habit.getString(TAG_TASK_NOTES)
+							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
 							, habit.getDouble(TAG_TASK_VALUE));

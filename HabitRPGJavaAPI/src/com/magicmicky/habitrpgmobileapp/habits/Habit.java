@@ -5,7 +5,7 @@ package com.magicmicky.habitrpgmobileapp.habits;
  *
  */
 public class Habit extends HabitItem{
-
+	private final static HabitType type = HabitType.habit;
 	private boolean up;
 	private boolean down;
 	/**
@@ -49,4 +49,20 @@ public class Habit extends HabitItem{
 	public void setDown(boolean down) {
 		this.down = down;
 	}
+	public String getJSONString() {
+		StringBuilder json = new StringBuilder();
+		json.append("{\"type\":\"" + this.getType() + "\"," );
+		json.append("\"text\":\"" + this.getText() + "\"," );
+		json.append("\"value\":0," );
+		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
+			json.append("\"note\":\"" + this.getNotes() + "\"," );
+		json.append("\"up\":" + (this.isUp() ? "true":"false") + "," );
+		json.append("\"down\":" + (this.isDown() ? "true":"false") + "}" );
+		return json.toString();
+	}
+	@Override
+	protected String getType() {
+		return type.toString();
+	}
+
 }
