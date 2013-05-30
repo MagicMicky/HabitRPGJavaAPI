@@ -42,28 +42,7 @@ public class GetUser extends WebServiceInteraction {
 		return new HttpGet();
 	}
 	
-	public static void fixDailies(User us, HostConfig config) {
-		List<HabitItem> items = us.getItems();
-		Calendar today = new GregorianCalendar();
-		// reset hour, minutes, seconds and millis
-		today.set(Calendar.HOUR_OF_DAY, us.getDayStart());
-		today.set(Calendar.MINUTE, 0);
-		today.set(Calendar.SECOND, 0);
-		today.set(Calendar.MILLISECOND, 0);
-		for(HabitItem item: items) {
-			if(item instanceof Daily) {
-				Daily daily = (Daily) item;
-				Timestamp last= new Timestamp(daily.getLastCompleted());
-				//last = 29/05/2013 23:59
-				//date =30/05/2013 00:00
-				if(daily.isCompleted() && last.compareTo(new Timestamp(today.getTime().getTime())) < 0) {// if last is before today
-					PostTaskDirection dir = new PostTaskDirection(null, daily.getId(), "down", config);
-					dir.getData().parse();
-					//System.out.println(daily.getText() + " is out of date");
-				}
-			}
-		}
-	}
+
 	
 	/**
 	 * Parse the information about the User
