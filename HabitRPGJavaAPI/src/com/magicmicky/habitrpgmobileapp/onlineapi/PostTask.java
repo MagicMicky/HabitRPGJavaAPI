@@ -66,7 +66,7 @@ public class PostTask extends WebServiceInteraction {
 					this.callback.onError(this.getObject().getString(TAG_ERR));
 				} catch (JSONException e) {
 					e.printStackTrace();
-					this.callback.onError("Error while parsing");
+					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
 				}
 				return;
 			}
@@ -96,7 +96,7 @@ public class PostTask extends WebServiceInteraction {
 					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.getDouble(TAG_TASK_VALUE), obj.getBoolean(TAG_TASK_UP), obj.getBoolean(TAG_TASK_DOWN));
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
 				e.printStackTrace();
 			}
 			return item;	

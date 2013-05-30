@@ -8,6 +8,7 @@ public class Daily extends HabitItem{
 	private final static HabitType type=HabitType.daily;
 	private boolean completed;
 	private boolean[] repeat;
+	private long lastCompleted;
 	/**
 	 * Construct a daily based on all the information needed
 	 * @param id the id of the daily
@@ -23,6 +24,11 @@ public class Daily extends HabitItem{
 		super(id, notes, priority, text, value);
 		this.setCompleted(completed);
 		this.setRepeat(repeat);
+	}
+	public Daily(String id, String notes, String priority, String text,
+			double value, boolean completed, boolean[] repeat, long lastCompleted) {
+		this(id, notes, priority, text, value,completed,repeat);
+		this.setLastCompleted(lastCompleted);
 	}
 	/**
 	 * @return if the daily is completed
@@ -65,6 +71,18 @@ public class Daily extends HabitItem{
 			json.append("\"notes\":\"" + this.getNotes() + "\"," );
 		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
 		return json.toString();
+	}
+	/**
+	 * @return the lastCompleted
+	 */
+	public long getLastCompleted() {
+		return lastCompleted;
+	}
+	/**
+	 * @param lastCompleted the lastCompleted to set
+	 */
+	public void setLastCompleted(long lastCompleted) {
+		this.lastCompleted = lastCompleted;
 	}
 
 

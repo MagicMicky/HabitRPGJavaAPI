@@ -64,12 +64,16 @@ public class PostTaskDirection extends WebServiceInteraction {
 				 hp = this.getObject().getDouble(TAG_NOWHP);
 				 gold = this.getObject().getDouble(TAG_NOWGP);
 				 lvl = this.getObject().getDouble(TAG_LVL);
-				 delta = this.getObject().getDouble(TAG_DELTA);
+				 if(this.getObject().has(TAG_DELTA))
+					 delta = this.getObject().getDouble(TAG_DELTA);
+				 if(callback != null)
+					 callback.onPostResult(xp, hp, gold, lvl, delta);
+
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				 if(callback != null)
+					 callback.onError("The server returned an unexpected response. It might be due to a server maintenance.");
 				e.printStackTrace();
 			}
-			callback.onPostResult(xp, hp, gold, lvl, delta);
 		}
 		
 	}

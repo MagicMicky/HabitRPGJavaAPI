@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -92,23 +93,26 @@ public abstract class WebServiceInteraction {
 	            JSONObject jsonObj = new JSONObject(jsonstr);
 	            result = findAnswer(jsonObj);
             } catch (UnsupportedEncodingException e) {
-	            this.callback.onError(e.getMessage());
+	            this.callback.onError("There was an error with the Encoding. Check the server's address");
 	            e.printStackTrace();
 	        } catch (ClientProtocolException e) {
-	            this.callback.onError(e.getMessage());
+	            this.callback.onError("There was an error with the client protocol?!");
 	            e.printStackTrace();
 	        } catch (IOException e) {
-	            this.callback.onError(e.getMessage());
+	            this.callback.onError("There was an error... Please check your settings!");
 	            e.printStackTrace();
 
 	        } catch (JSONException e) {
-	            this.callback.onError(e.getMessage());
+	            this.callback.onError("The server returned an unexpected answer. It might be due to a server maintenance, but please check your settings");
 	            e.printStackTrace();
 
-	        } catch (Exception e) {
-	            this.callback.onError(e.getMessage());
-	            e.printStackTrace();
-	        }
+	        } catch (URISyntaxException e) {
+	            this.callback.onError("The server's URL isn't well formatted. Please check your settings");
+	        	e.printStackTrace();
+			} catch (Exception e) {
+	            this.callback.onError("An unknown error happend... Please check your settings!");
+	        	e.printStackTrace();
+			}
 	 
 	        return result;
 	 

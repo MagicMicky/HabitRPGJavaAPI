@@ -1,7 +1,10 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.http.client.methods.HttpGet;
@@ -38,6 +41,30 @@ public class GetUser extends WebServiceInteraction {
 	protected HttpRequestBase getRequest() {
 		return new HttpGet();
 	}
+	
+	public static void fixDailies(User us, HostConfig config) {
+		List<HabitItem> items = us.getItems();
+		Calendar today = new GregorianCalendar();
+		// reset hour, minutes, seconds and millis
+		today.set(Calendar.HOUR_OF_DAY, us.getDayStart());
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND, 0);
+		for(HabitItem item: items) {
+			if(item instanceof Daily) {
+				Daily daily = (Daily) item;
+				Timestamp last= new Timestamp(daily.getLastCompleted());
+				//last = 29/05/2013 23:59
+				//date =30/05/2013 00:00
+				if(daily.isCompleted() && last.compareTo(new Timestamp(today.getTime().getTime())) < 0) {// if last is before today
+					PostTaskDirection dir = new PostTaskDirection(null, daily.getId(), "down", config);
+					dir.getData().parse();
+					//System.out.println(daily.getText() + " is out of date");
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Parse the information about the User
 	 * @author MagicMicky
@@ -67,6 +94,8 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_TASK_UP = "up";
 			private static final String TAG_TASK_DOWN = "down";
 			private static final String TAG_TASK_REPEAT = "repeat";
+			private static final String TAG_TASK_HISTORY="history";
+				private static final String TAG_TASK_HISTORY_DATE = "date";
 		private static final String TAG_AUTH = "auth";
 			private static final String TAG_AUTH_LOCAL="local";
 			private static final String TAG_AUTH_LOCAL_UNAME = "username";
@@ -78,6 +107,7 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_PREFS_HAIR = "hair";
 			private static final String TAG_PREFS_ARMORSET = "armorSet";
 			private static final String TAG_PREFS_SHOWHELM = "showHelm";
+			private static final String TAG_PREFS_DAYSTART = "dayStart";
 		private static final String TAG_ITEMS = "items";
 			private static final String TAG_ITEMS_ARMOR = "armor";
 			private static final String TAG_ITEMS_HEAD = "head";
@@ -98,18 +128,24 @@ public class GetUser extends WebServiceInteraction {
 		@Override
 		public void parse() {
 			User user = new User();;
-			this.parseHabits(user);
-			this.parseUserInfos(user);
-			this.parseUserLook(user);
-			callback.onUserReceived(user);
+			try {
+				this.parseHabits(user);
+				this.parseUserInfos(user);
+				this.parseUserLook(user);
+				callback.onUserReceived(user);
+
+			} catch (JSONException e) {
+				this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+				e.printStackTrace();
+			}
 		}
 		
 		/**
 		 * Parses the user look from the JSONObject {@link #getObject()}, and stores it in the user
 		 * @param user
+		 * @throws JSONException 
 		 */
-		private void parseUserLook(User user) {
-			try {
+		private void parseUserLook(User user) throws JSONException {
 				UserLook look = new UserLook();
 				JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
 				look.setGender(prefs.getString(TAG_PREFS_GENDER));
@@ -124,38 +160,38 @@ public class GetUser extends WebServiceInteraction {
 				look.setShield(items.getInt(TAG_ITEMS_SHIELD));
 				look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
 				user.setLook(look);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
 		}
 
 
 		/**
 		 * Parse the different habits of an user
 		 * @param user the user to put the information in
+		 * @throws JSONException 
 		 */
-		private void parseHabits(User user) {
-			try {
+		private void parseHabits(User user) throws JSONException {
 				List<HabitItem> items = new ArrayList<HabitItem>();
 				JSONArray dailies = this.getObject().getJSONArray(TAG_DAILIESID);
 				JSONObject tasks = this.getObject().getJSONObject(TAG_TASKS);
 				for(int i=0;i<dailies.length();i++) {
 					JSONObject habit = tasks.getJSONObject(dailies.getString(i));
+					JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
 					HabitItem it;
+					long lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
 					boolean[] repeats = {false,false,false,false,false,false,false};
 					if(habit.has(TAG_TASK_REPEAT)) {
 						JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
 						for(int j=0;j<7;j++) {
 							repeats[j] = repeatTag.getBoolean(whatDay(j));
 						}
-						}
+					}
 					it = new Daily(habit.getString(TAG_TASK_ID)
 							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
 							, habit.getDouble(TAG_TASK_VALUE)
 							, habit.getBoolean(TAG_TASK_COMPLETED)
-							, repeats);
+							, repeats
+							, lastday);
 					items.add(it);
 				}
 				JSONArray todo = this.getObject().getJSONArray(TAG_TODOIDS);
@@ -197,17 +233,15 @@ public class GetUser extends WebServiceInteraction {
 				}
 				user.setItems(items);
 
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			
 		}
 
 		/**
 		 * Parse the information of an user
 		 * @param user the user to put the information in
+		 * @throws JSONException 
 		 */
-		private void parseUserInfos(User user) {
-			try {
+		private void parseUserInfos(User user) throws JSONException {
 				JSONObject stats = this.getObject().getJSONObject(TAG_STATS);
 				user.setLvl(stats.getInt(TAG_LVL));
 				user.setXp(stats.getDouble(TAG_XP));
@@ -216,15 +250,17 @@ public class GetUser extends WebServiceInteraction {
 				user.setMaxHp(stats.getDouble(TAG_HP_MAX));
 				user.setGp(stats.getDouble(TAG_GP));
 				
+				JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
+				if(prefs.has(TAG_PREFS_DAYSTART))
+					user.setDayStart(prefs.getInt(TAG_PREFS_DAYSTART));
+				else
+					user.setDayStart(0);
 				JSONObject auth = this.getObject().getJSONObject(TAG_AUTH);
 				if(auth.has(TAG_AUTH_LOCAL)) {
 					user.setName(auth.getJSONObject(TAG_AUTH_LOCAL).getString(TAG_AUTH_LOCAL_UNAME));
 				} else if(auth.has(TAG_AUTH_FACEBOOK)) {
 					user.setName(auth.getJSONObject(TAG_AUTH_FACEBOOK).getString(TAG_AUTH_FACEBOOK_DISPLAYNAME));
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
 			
 		}
 		/**

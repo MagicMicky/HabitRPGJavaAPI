@@ -12,6 +12,7 @@ public class User {
 	private String name;
 	private double hp,maxHp,xp, maxXp,gp;
 	private int lvl;
+	private int dayStart;
 	private UserLook look;
 	/**
 	 * Create a new User
@@ -139,5 +140,17 @@ public class User {
 	 */
 	public void addTask(HabitItem task) {
 		this.items.add(task);
+	}
+	/**
+	 * @return the dayStart
+	 */
+	public int getDayStart() {
+		return dayStart;
+	}
+	/**
+	 * @param dayStart the dayStart to set
+	 */
+	public void setDayStart(int dayStart) {
+		this.dayStart = dayStart;
 	}
 }
