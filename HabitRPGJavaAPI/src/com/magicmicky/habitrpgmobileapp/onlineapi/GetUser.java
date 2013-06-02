@@ -59,7 +59,7 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_XP_MAX="toNextLevel";
 			private static final String TAG_HP_MAX = "maxHealth";
 		private static final String TAG_TASKS = "tasks";
-			private static final String TAG_TASK_TYPE = "type";
+			//private static final String TAG_TASK_TYPE = "type";
 			private static final String TAG_TASK_ID = "id";
 			private static final String TAG_TASK_DATE = "date";
 			private static final String TAG_TASK_NOTES = "notes";
@@ -89,7 +89,7 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_ITEMS_HEAD = "head";
 			private static final String TAG_ITEMS_SHIELD = "shield";
 			private static final String TAG_ITEMS_WEAPON = "weapon";
-			private static final String TAG_ITEMS_PETS = "pets";
+			//TODO:private static final String TAG_ITEMS_PETS = "pets";
 
 		/**
 		 * Create a new UserData based on a JSONObject to parse, and a callback to call

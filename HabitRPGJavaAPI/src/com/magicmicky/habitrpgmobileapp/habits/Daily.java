@@ -10,7 +10,7 @@ public class Daily extends HabitItem{
 	private boolean completed;
 	private boolean[] repeat;
 	private long lastCompleted;
-	//private int streak;
+	//TODO:private int streak;
 	/**
 	 * Construct a daily based on all the information needed
 	 * @param id the id of the daily
@@ -60,7 +60,6 @@ public class Daily extends HabitItem{
 	}
 	@Override
 	protected String getType() {
-		// TODO Auto-generated method stub
 		return type.toString();
 	}
 	@Override
