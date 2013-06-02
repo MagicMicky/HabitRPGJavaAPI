@@ -126,19 +126,31 @@ public class GetUser extends WebServiceInteraction {
 		 */
 		private void parseUserLook(User user) throws JSONException {
 				UserLook look = new UserLook();
-				JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
-				look.setGender(prefs.getString(TAG_PREFS_GENDER));
-				look.setSkin(prefs.getString(TAG_PREFS_SKIN));
-				look.setHair(prefs.getString(TAG_PREFS_HAIR));
-				look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
-				look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
-				
-				JSONObject items = this.getObject().getJSONObject(TAG_ITEMS);
-				look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
-				look.setHead(items.getInt(TAG_ITEMS_HEAD));
-				look.setShield(items.getInt(TAG_ITEMS_SHIELD));
-				look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
-				user.setLook(look);
+				if(this.getObject().has(TAG_PREFS)) {
+					JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
+					if(prefs.has(TAG_PREFS_GENDER))
+						look.setGender(prefs.getString(TAG_PREFS_GENDER));
+					if(prefs.has(TAG_PREFS_SKIN))
+						look.setSkin(prefs.getString(TAG_PREFS_SKIN));
+					if(prefs.has(TAG_PREFS_HAIR))
+						look.setHair(prefs.getString(TAG_PREFS_HAIR));
+					if(prefs.has(TAG_PREFS_ARMORSET))
+						look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
+					if(prefs.has(TAG_PREFS_SHOWHELM))
+						look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+				}
+				if(this.getObject().has(TAG_ITEMS)) {
+					JSONObject items = this.getObject().getJSONObject(TAG_ITEMS);
+					if(items.has(TAG_ITEMS_ARMOR))
+						look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
+					if(items.has(TAG_ITEMS_HEAD))
+						look.setHead(items.getInt(TAG_ITEMS_HEAD));
+					if(items.has(TAG_ITEMS_SHIELD))
+						look.setShield(items.getInt(TAG_ITEMS_SHIELD));
+					if(items.has(TAG_ITEMS_WEAPON))
+						look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
+					user.setLook(look);
+				}
 		}
 
 
@@ -152,10 +164,13 @@ public class GetUser extends WebServiceInteraction {
 				JSONArray dailies = this.getObject().getJSONArray(TAG_DAILIESID);
 				JSONObject tasks = this.getObject().getJSONObject(TAG_TASKS);
 				for(int i=0;i<dailies.length();i++) {
-					JSONObject habit = tasks.getJSONObject(dailies.getString(i));
-					JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
 					HabitItem it;
-					long lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+					JSONObject habit = tasks.getJSONObject(dailies.getString(i));
+					long lastday=0;
+					if(habit.has(TAG_TASK_HISTORY)) {
+						JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
+						lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+					} 
 					boolean[] repeats = {false,false,false,false,false,false,false};
 					if(habit.has(TAG_TASK_REPEAT)) {
 						JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
@@ -167,8 +182,8 @@ public class GetUser extends WebServiceInteraction {
 							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
-							, habit.getDouble(TAG_TASK_VALUE)
-							, habit.getBoolean(TAG_TASK_COMPLETED)
+							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+							, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
 							, repeats
 							, lastday);
 					items.add(it);
@@ -181,8 +196,8 @@ public class GetUser extends WebServiceInteraction {
 							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
-							, habit.getDouble(TAG_TASK_VALUE)
-							, habit.getBoolean(TAG_TASK_COMPLETED)
+							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+							, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
 							, habit.has(TAG_TASK_DATE) ? habit.getString(TAG_TASK_DATE) : null);
 					items.add(it);
 				}			
@@ -194,9 +209,9 @@ public class GetUser extends WebServiceInteraction {
 							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
-							, habit.getDouble(TAG_TASK_VALUE)
-							, habit.getBoolean(TAG_TASK_UP)
-							, habit.getBoolean(TAG_TASK_DOWN));
+							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+							, habit.has(TAG_TASK_UP) ? habit.getBoolean(TAG_TASK_UP) : false
+							, habit.has(TAG_TASK_DOWN) ? habit.getBoolean(TAG_TASK_DOWN) : false);
 					items.add(it);
 				}
 				JSONArray reward = this.getObject().getJSONArray(TAG_REWARDIDS);
@@ -207,7 +222,7 @@ public class GetUser extends WebServiceInteraction {
 							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
 							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
 							, habit.getString(TAG_TASK_TEXT)
-							, habit.getDouble(TAG_TASK_VALUE));
+							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0);
 					items.add(it);
 				}
 				user.setItems(items);
@@ -221,25 +236,36 @@ public class GetUser extends WebServiceInteraction {
 		 * @throws JSONException 
 		 */
 		private void parseUserInfos(User user) throws JSONException {
+			if(this.getObject().has(TAG_STATS)) {
 				JSONObject stats = this.getObject().getJSONObject(TAG_STATS);
-				user.setLvl(stats.getInt(TAG_LVL));
-				user.setXp(stats.getDouble(TAG_XP));
-				user.setMaxXp(stats.getDouble(TAG_XP_MAX));
-				user.setHp(stats.getDouble(TAG_HP));
-				user.setMaxHp(stats.getDouble(TAG_HP_MAX));
-				user.setGp(stats.getDouble(TAG_GP));
-				
-				JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
-				if(prefs.has(TAG_PREFS_DAYSTART))
-					user.setDayStart(prefs.getInt(TAG_PREFS_DAYSTART));
-				else
-					user.setDayStart(0);
+				if(stats.has(TAG_LVL))
+					user.setLvl(stats.getInt(TAG_LVL));
+				if(stats.has(TAG_XP))
+					user.setXp(stats.getDouble(TAG_XP));
+				if(stats.has(TAG_XP_MAX))
+					user.setMaxXp(stats.getDouble(TAG_XP_MAX));
+				if(stats.has(TAG_HP))
+					user.setHp(stats.getDouble(TAG_HP));
+				if(stats.has(TAG_HP_MAX))
+					user.setMaxHp(stats.getDouble(TAG_HP_MAX));
+				if(stats.has(TAG_GP))
+					user.setGp(stats.getDouble(TAG_GP));
+			}
+			if(this.getObject().has(TAG_PREFS)) {
+			JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
+			if(prefs.has(TAG_PREFS_DAYSTART))
+				user.setDayStart(prefs.getInt(TAG_PREFS_DAYSTART));
+			else
+				user.setDayStart(0);
+			}
+			if(this.getObject().has(TAG_AUTH)) {
 				JSONObject auth = this.getObject().getJSONObject(TAG_AUTH);
 				if(auth.has(TAG_AUTH_LOCAL)) {
 					user.setName(auth.getJSONObject(TAG_AUTH_LOCAL).getString(TAG_AUTH_LOCAL_UNAME));
 				} else if(auth.has(TAG_AUTH_FACEBOOK)) {
 					user.setName(auth.getJSONObject(TAG_AUTH_FACEBOOK).getString(TAG_AUTH_FACEBOOK_DISPLAYNAME));
 				}
+			}
 			
 		}
 		/**

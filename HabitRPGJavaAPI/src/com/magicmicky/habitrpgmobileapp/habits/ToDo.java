@@ -69,6 +69,8 @@ public class ToDo extends HabitItem{
 		json.append("\"value\":0," );
 		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
 			json.append("\"notes\":\"" + this.getNotes() + "\"," );
+		if(this.getDate()!=null && this.getDate()!="")
+			json.append("\"date\":\"" + this.getDate() + "\"," );
 		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
 		System.out.println("STRING--" + json.toString());
 		return json.toString();

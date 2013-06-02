@@ -87,13 +87,13 @@ public class PostTask extends WebServiceInteraction {
 
 				if(type.equals(HabitType.daily.toString())) {
 					boolean[] days = {false,false,false,false,false,false,false};
-					item = new Daily(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.getDouble(TAG_TASK_VALUE), obj.getBoolean(TAG_TASK_COMPLETED),days);
+					item = new Daily(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "",  obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ? obj.getBoolean(TAG_TASK_COMPLETED) : false,days);
 				} else if(type.equals(HabitType.todo.toString())) {
-					item = new ToDo(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.getDouble(TAG_TASK_VALUE), obj.getBoolean(TAG_TASK_COMPLETED), null);
+					item = new ToDo(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ?  obj.getBoolean(TAG_TASK_COMPLETED) : false, null);
 				} else if(type.equals(HabitType.reward.toString())) {
-					item = new Reward(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.getDouble(TAG_TASK_VALUE));
+					item = new Reward(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0);
 				} else {
-					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.getDouble(TAG_TASK_VALUE), obj.getBoolean(TAG_TASK_UP), obj.getBoolean(TAG_TASK_DOWN));
+					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0,obj.has(TAG_TASK_UP)? obj.getBoolean(TAG_TASK_UP) : false, obj.has(TAG_TASK_DOWN) ? obj.getBoolean(TAG_TASK_DOWN) : false);
 				}
 			} catch (JSONException e) {
 				this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");

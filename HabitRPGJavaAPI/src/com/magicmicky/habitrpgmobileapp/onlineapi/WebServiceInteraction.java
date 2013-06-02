@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -98,8 +99,11 @@ public abstract class WebServiceInteraction {
 	        } catch (ClientProtocolException e) {
 	            this.callback.onError("There was an error with the client protocol?!");
 	            e.printStackTrace();
-	        } catch (IOException e) {
-	            this.callback.onError("There was an error... Please check your settings!");
+	        } catch(UnknownHostException e) {
+	            this.callback.onError("No address associated with hostname. Please check your connection and your host settings");
+	        	e.printStackTrace();
+			}  catch (IOException e) {
+	            this.callback.onError("There was an error... Are you still connected to the internet?");
 	            e.printStackTrace();
 
 	        } catch (JSONException e) {
@@ -109,7 +113,7 @@ public abstract class WebServiceInteraction {
 	        } catch (URISyntaxException e) {
 	            this.callback.onError("The server's URL isn't well formatted. Please check your settings");
 	        	e.printStackTrace();
-			} catch (Exception e) {
+			}catch (Exception e) {
 	            this.callback.onError("An unknown error happend... Please check your settings!");
 	        	e.printStackTrace();
 			}

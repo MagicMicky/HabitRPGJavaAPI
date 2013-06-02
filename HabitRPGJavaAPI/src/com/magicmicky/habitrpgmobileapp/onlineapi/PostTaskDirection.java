@@ -60,10 +60,14 @@ public class PostTaskDirection extends WebServiceInteraction {
 		public void parse() {
 			double xp = 0,hp = 0,gold = 0,lvl = 0,delta = 0;
 			try {
-				 xp = this.getObject().getDouble(TAG_NOWXP);
-				 hp = this.getObject().getDouble(TAG_NOWHP);
-				 gold = this.getObject().getDouble(TAG_NOWGP);
-				 lvl = this.getObject().getDouble(TAG_LVL);
+				 if(this.getObject().has(TAG_NOWXP))
+					 xp = this.getObject().getDouble(TAG_NOWXP);
+				 if(this.getObject().has(TAG_NOWHP))
+					 hp = this.getObject().getDouble(TAG_NOWHP);
+				 if(this.getObject().has(TAG_NOWGP))
+					 gold = this.getObject().getDouble(TAG_NOWGP);
+				 if(this.getObject().has(TAG_LVL))
+					 lvl = this.getObject().getDouble(TAG_LVL);
 				 if(this.getObject().has(TAG_DELTA))
 					 delta = this.getObject().getDouble(TAG_DELTA);
 				 if(callback != null)

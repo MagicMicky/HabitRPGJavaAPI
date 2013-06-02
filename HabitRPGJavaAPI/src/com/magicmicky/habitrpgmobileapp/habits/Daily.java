@@ -6,9 +6,11 @@ package com.magicmicky.habitrpgmobileapp.habits;
  */
 public class Daily extends HabitItem{
 	private final static HabitType type=HabitType.daily;
+	private final static String[] days = {"m","t","w","th","f","s","su"};
 	private boolean completed;
 	private boolean[] repeat;
 	private long lastCompleted;
+	//private int streak;
 	/**
 	 * Construct a daily based on all the information needed
 	 * @param id the id of the daily
@@ -69,7 +71,18 @@ public class Daily extends HabitItem{
 		json.append("\"value\":0," );
 		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
 			json.append("\"notes\":\"" + this.getNotes() + "\"," );
+		if(this.getRepeat() != null) {
+			json.append("\"repeat\":{" );
+			for(int i=0;i<7;i++) {
+				json.append("\"" + Daily.days[i] + "\": " + this.getRepeat()[i] + ",");
+			}
+			json =json.deleteCharAt(json.length()-1);
+			json.append("},");
+		}
+		//json.append("\"streak\":" + streak + ",");
 		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
+		
+		System.out.println("STRING--" + json.toString());
 		return json.toString();
 	}
 	/**
