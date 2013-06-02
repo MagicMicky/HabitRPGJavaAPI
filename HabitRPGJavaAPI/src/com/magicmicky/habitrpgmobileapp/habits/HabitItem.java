@@ -91,7 +91,16 @@ public abstract class HabitItem {
 	public void setValue(double value) {
 		this.value = value;
 	}
+	
+	/**
+	 * Returns a string of the type of the HabitItem
+	 * @return the string of the Item type
+	 */
 	protected abstract String getType();
+	/**
+	 * Returns a JSONString of the current HabitItem
+	 * @return the Item in json (ready to send as POST)
+	 */
 	public abstract String getJSONString();
 
 

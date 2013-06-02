@@ -14,7 +14,11 @@ import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
 import com.magicmicky.habitrpgmobileapp.habits.HabitType;
 import com.magicmicky.habitrpgmobileapp.habits.Reward;
 import com.magicmicky.habitrpgmobileapp.habits.ToDo;
-
+/**
+ * Allows creation of an new task using POST /api/v1/user/task
+ * @author Mickael
+ * @see OnHabitsAPIResult#onPostTaskAnswer(HabitItem)
+ */
 public class PostTask extends WebServiceInteraction {
 	private static final String CMD = "user/task/";
 	private HabitItem habit;
@@ -42,7 +46,11 @@ public class PostTask extends WebServiceInteraction {
 		return new PostTaskData(answer, this.getCallback());
 	}
 
-
+	/**
+	 * The result of the POST task request, which has to be parsed
+	 * @author Mickael
+	 *
+	 */
 	private class PostTaskData extends Answer {
 		private static final String TAG_ERR ="err";
 		private static final String TAG_TASK_TYPE = "type";
@@ -77,7 +85,10 @@ public class PostTask extends WebServiceInteraction {
 			if(this.callback != null)
 				this.callback.onPostTaskAnswer(item);
 		}
-
+		/**
+		 * Parse a task
+		 * @return
+		 */
 		private HabitItem parseTask() {
 			JSONObject obj = this.getObject();
 			String type;

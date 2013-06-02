@@ -10,7 +10,10 @@ public enum HabitType {
 	private HabitType(String str) {
 		this.name=str;
 	}
-	
+	/**
+	 * Returns a string of the HabitType
+	 * @return the habittype
+	 */
 	public String toString() {
 		return this.name;
 	}

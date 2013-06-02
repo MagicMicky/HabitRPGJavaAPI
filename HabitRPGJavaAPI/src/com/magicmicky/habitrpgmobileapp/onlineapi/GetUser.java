@@ -1,10 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.http.client.methods.HttpGet;

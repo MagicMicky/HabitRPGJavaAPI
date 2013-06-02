@@ -31,7 +31,6 @@ public class UserLook {
 		this.weapon=weapon;
 	}
 	public UserLook () {
-		
 	}
 	/**
 	 * @return the gender of the user

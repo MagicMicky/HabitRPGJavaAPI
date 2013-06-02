@@ -5,6 +5,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONObject;
 /**
  * Retrieves the list of tasks from the API
+ * @deprecated Not implemented yet.
  * @author MagicMicky
  */
 public class GetTasks extends WebServiceInteraction{

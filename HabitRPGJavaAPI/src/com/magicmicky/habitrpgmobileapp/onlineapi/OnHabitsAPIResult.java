@@ -33,6 +33,10 @@ public interface OnHabitsAPIResult {
 	 * @param message an optional error message
 	 */
 	void onError(String message);
+	/**
+	 * This is called when a new Task is added
+	 * @param task
+	 */
 	void onPostTaskAnswer(HabitItem task);
 
 }
