@@ -103,17 +103,31 @@ public class GetUser extends WebServiceInteraction {
 
 		@Override
 		public void parse() {
-			User user = new User();;
+			User user = new User();
+			int error=0;
 			try {
 				this.parseHabits(user);
+			}  catch (JSONException e) {
+				this.callback.onError("An error happend. Your tasks couldn't be parsed");
+				e.printStackTrace();
+				error++;
+			}
+			try {
 				this.parseUserInfos(user);
-				this.parseUserLook(user);
-				callback.onUserReceived(user);
-
 			} catch (JSONException e) {
-				this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+				if(error<1)
+					this.callback.onError("An error happend. Your personnal information couldn't be parsed");
+				e.printStackTrace();
+				error++;
+			}
+			try  {
+				this.parseUserLook(user);
+			} catch (JSONException e) {
+				if(error<2)
+					this.callback.onError("An error happend. Your avatar's look couldn't be retrieved from the server");
 				e.printStackTrace();
 			}
+				callback.onUserReceived(user);
 		}
 		
 		/**
@@ -121,33 +135,36 @@ public class GetUser extends WebServiceInteraction {
 		 * @param user
 		 * @throws JSONException 
 		 */
-		private void parseUserLook(User user) throws JSONException {
-				UserLook look = new UserLook();
-				if(this.getObject().has(TAG_PREFS)) {
-					JSONObject prefs = this.getObject().getJSONObject(TAG_PREFS);
-					if(prefs.has(TAG_PREFS_GENDER))
-						look.setGender(prefs.getString(TAG_PREFS_GENDER));
-					if(prefs.has(TAG_PREFS_SKIN))
-						look.setSkin(prefs.getString(TAG_PREFS_SKIN));
-					if(prefs.has(TAG_PREFS_HAIR))
-						look.setHair(prefs.getString(TAG_PREFS_HAIR));
-					if(prefs.has(TAG_PREFS_ARMORSET))
-						look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
-					if(prefs.has(TAG_PREFS_SHOWHELM))
-						look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
-				}
-				if(this.getObject().has(TAG_ITEMS)) {
-					JSONObject items = this.getObject().getJSONObject(TAG_ITEMS);
-					if(items.has(TAG_ITEMS_ARMOR))
-						look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
-					if(items.has(TAG_ITEMS_HEAD))
-						look.setHead(items.getInt(TAG_ITEMS_HEAD));
-					if(items.has(TAG_ITEMS_SHIELD))
-						look.setShield(items.getInt(TAG_ITEMS_SHIELD));
-					if(items.has(TAG_ITEMS_WEAPON))
-						look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
-					user.setLook(look);
-				}
+		private void parseUserLook(User user) throws JSONException  {
+			UserLook look = new UserLook();
+			if(this.getObject().has(TAG_PREFS)) {
+				JSONObject prefs;
+
+					prefs = this.getObject().getJSONObject(TAG_PREFS);
+
+				if(prefs.has(TAG_PREFS_GENDER))
+					look.setGender(prefs.getString(TAG_PREFS_GENDER));
+				if(prefs.has(TAG_PREFS_SKIN))
+					look.setSkin(prefs.getString(TAG_PREFS_SKIN));
+				if(prefs.has(TAG_PREFS_HAIR))
+					look.setHair(prefs.getString(TAG_PREFS_HAIR));
+				if(prefs.has(TAG_PREFS_ARMORSET))
+					look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
+				if(prefs.has(TAG_PREFS_SHOWHELM))
+					look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+			}
+			if(this.getObject().has(TAG_ITEMS)) {
+				JSONObject items = this.getObject().getJSONObject(TAG_ITEMS);
+				if(items.has(TAG_ITEMS_ARMOR))
+					look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
+				if(items.has(TAG_ITEMS_HEAD))
+					look.setHead(items.getInt(TAG_ITEMS_HEAD));
+				if(items.has(TAG_ITEMS_SHIELD))
+					look.setShield(items.getInt(TAG_ITEMS_SHIELD));
+				if(items.has(TAG_ITEMS_WEAPON))
+					look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
+				user.setLook(look);
+			}
 		}
 
 
@@ -158,69 +175,117 @@ public class GetUser extends WebServiceInteraction {
 		 */
 		private void parseHabits(User user) throws JSONException {
 				List<HabitItem> items = new ArrayList<HabitItem>();
-				JSONArray dailies = this.getObject().getJSONArray(TAG_DAILIESID);
 				JSONObject tasks = this.getObject().getJSONObject(TAG_TASKS);
-				for(int i=0;i<dailies.length();i++) {
-					HabitItem it;
-					JSONObject habit = tasks.getJSONObject(dailies.getString(i));
-					long lastday=0;
-					if(habit.has(TAG_TASK_HISTORY)) {
-						JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
-						lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
-					} 
-					boolean[] repeats = {false,false,false,false,false,false,false};
-					if(habit.has(TAG_TASK_REPEAT)) {
-						JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
-						for(int j=0;j<7;j++) {
-							repeats[j] = repeatTag.getBoolean(whatDay(j));
+				try {
+					JSONArray dailies = this.getObject().getJSONArray(TAG_DAILIESID);
+					for(int i=0;i<dailies.length();i++) {
+						if(tasks.has(dailies.getString(i))) {
+							try {
+								HabitItem it;
+								JSONObject habit = tasks.getJSONObject(dailies.getString(i));
+								long lastday=0;
+								if(habit.has(TAG_TASK_HISTORY)) {
+									JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
+									lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+								} 
+								boolean[] repeats = {false,false,false,false,false,false,false};
+								if(habit.has(TAG_TASK_REPEAT)) {
+									JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
+									for(int j=0;j<7;j++) {
+										repeats[j] = repeatTag.getBoolean(whatDay(j));
+									}
+								}
+								it = new Daily(habit.getString(TAG_TASK_ID)
+										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
+										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
+										, habit.getString(TAG_TASK_TEXT)
+										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+										, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
+										, repeats
+										, lastday);
+								items.add(it);
+							}  catch (JSONException e) {
+								this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+								e.printStackTrace();
+							}
 						}
 					}
-					it = new Daily(habit.getString(TAG_TASK_ID)
-							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-							, habit.getString(TAG_TASK_TEXT)
-							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-							, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
-							, repeats
-							, lastday);
-					items.add(it);
+				}  catch (JSONException e) {
+					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					e.printStackTrace();
 				}
-				JSONArray todo = this.getObject().getJSONArray(TAG_TODOIDS);
-				for(int i=0;i<todo.length();i++) {
-					JSONObject habit = tasks.getJSONObject(todo.getString(i));
-					HabitItem it;
-					it = new ToDo(habit.getString(TAG_TASK_ID)
-							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-							, habit.getString(TAG_TASK_TEXT)
-							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-							, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
-							, habit.has(TAG_TASK_DATE) ? habit.getString(TAG_TASK_DATE) : null);
-					items.add(it);
-				}			
-				JSONArray habitH = this.getObject().getJSONArray(TAG_HABITSID);
-				for(int i=0;i<habitH.length();i++) {
-					JSONObject habit= tasks.getJSONObject(habitH.getString(i));
-					HabitItem it;
-					it = new Habit(habit.getString(TAG_TASK_ID)
-							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-							, habit.getString(TAG_TASK_TEXT)
-							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-							, habit.has(TAG_TASK_UP) ? habit.getBoolean(TAG_TASK_UP) : false
-							, habit.has(TAG_TASK_DOWN) ? habit.getBoolean(TAG_TASK_DOWN) : false);
-					items.add(it);
+				try {
+					JSONArray todo = this.getObject().getJSONArray(TAG_TODOIDS);
+					for(int i=0;i<todo.length();i++) {
+						try {
+							if(tasks.has(todo.getString(i))) {
+								JSONObject habit = tasks.getJSONObject(todo.getString(i));
+								HabitItem it;
+								it = new ToDo(habit.getString(TAG_TASK_ID)
+										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
+										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
+										, habit.getString(TAG_TASK_TEXT)
+										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+										, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
+										, habit.has(TAG_TASK_DATE) ? habit.getString(TAG_TASK_DATE) : null);
+								items.add(it);
+							}
+						}  catch (JSONException e) {
+							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							e.printStackTrace();
+						}
+					}
+				}  catch (JSONException e) {
+					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					e.printStackTrace();
 				}
+				try {
+					JSONArray habitH = this.getObject().getJSONArray(TAG_HABITSID);
+					for(int i=0;i<habitH.length();i++) {
+						try {
+							if(tasks.has(habitH.getString(i))) {
+								JSONObject habit= tasks.getJSONObject(habitH.getString(i));
+								HabitItem it;
+								it = new Habit(habit.getString(TAG_TASK_ID)
+										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
+										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
+										, habit.getString(TAG_TASK_TEXT)
+										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
+										, habit.has(TAG_TASK_UP) ? habit.getBoolean(TAG_TASK_UP) : false
+										, habit.has(TAG_TASK_DOWN) ? habit.getBoolean(TAG_TASK_DOWN) : false);
+								items.add(it);
+							}
+						} catch (JSONException e) {
+							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							e.printStackTrace();
+						}
+					}
+				} catch (JSONException e) {
+					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					e.printStackTrace();
+				}
+				try {
 				JSONArray reward = this.getObject().getJSONArray(TAG_REWARDIDS);
-				for(int i=0;i<reward.length();i++) {
-					JSONObject habit= tasks.getJSONObject(reward.getString(i));
-					HabitItem it;
-					it = new Reward(habit.getString(TAG_TASK_ID)
-							, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-							, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-							, habit.getString(TAG_TASK_TEXT)
-							, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0);
-					items.add(it);
+					for(int i=0;i<reward.length();i++) {
+						try  {
+							if(tasks.has(reward.getString(i))) {
+								JSONObject habit= tasks.getJSONObject(reward.getString(i));
+								HabitItem it;
+								it = new Reward(habit.getString(TAG_TASK_ID)
+										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
+										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
+										, habit.getString(TAG_TASK_TEXT)
+										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0);
+								items.add(it);
+							}
+						} catch (JSONException e) {
+							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							e.printStackTrace();
+						}
+					}
+				}  catch (JSONException e) {
+					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					e.printStackTrace();
 				}
 				user.setItems(items);
 

@@ -74,13 +74,13 @@ public class PostTask extends WebServiceInteraction {
 					this.callback.onError(this.getObject().getString(TAG_ERR));
 				} catch (JSONException e) {
 					e.printStackTrace();
-					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					//Should never happen since we check that it has an error;
 				}
 				return;
 			}
 			HabitItem item  = this.parseTask();
 			if(item == null) {
-				this.callback.onError("item==null");
+				this.callback.onError("There was a problem with the added task...");
 			}
 			if(this.callback != null)
 				this.callback.onPostTaskAnswer(item);
@@ -107,7 +107,7 @@ public class PostTask extends WebServiceInteraction {
 					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0,obj.has(TAG_TASK_UP)? obj.getBoolean(TAG_TASK_UP) : false, obj.has(TAG_TASK_DOWN) ? obj.getBoolean(TAG_TASK_DOWN) : false);
 				}
 			} catch (JSONException e) {
-				this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+				this.callback.onError("An error happend. We weren't able to save the task...");
 				e.printStackTrace();
 			}
 			return item;	

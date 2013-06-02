@@ -75,7 +75,7 @@ public class PostTaskDirection extends WebServiceInteraction {
 
 			} catch (JSONException e) {
 				 if(callback != null)
-					 callback.onError("The server returned an unexpected response. It might be due to a server maintenance.");
+					 callback.onError("The server returned an unexpected response. We weren't able to post your task.");
 				e.printStackTrace();
 			}
 		}

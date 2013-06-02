@@ -64,6 +64,9 @@ public abstract class WebServiceInteraction {
 	            
 	            HttpResponse response = client.execute(request);
 	            if(response.getStatusLine().getStatusCode() !=200) {
+	            	if(response.getStatusLine().getStatusCode() == 504) {
+	            		throw new WebServiceException("The server is experiencing issues. Please either wait or change server.");
+	            	}
 	            	System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
 	            	//throw new Exception("The server didn't answer 200");
 	            }
@@ -98,18 +101,22 @@ public abstract class WebServiceInteraction {
 	            this.callback.onError("No address associated with hostname. Please check your connection and your host settings");
 	        	e.printStackTrace();
 			}  catch (IOException e) {
-	            this.callback.onError("There was an error... Are you still connected to the internet?");
+	            this.callback.onError("An error happened... Are you still connected to the internet?");
 	            e.printStackTrace();
 
-	        } catch (JSONException e) {
+	        } catch(WebServiceException e) {
+				this.callback.onError(e.getMessage());
+				e.printStackTrace(); 
+			} catch (JSONException e) {
 	            this.callback.onError("The server returned an unexpected answer. It might be due to a server maintenance, but please check your settings");
 	            e.printStackTrace();
 
 	        } catch (URISyntaxException e) {
 	            this.callback.onError("The server's URL isn't well formatted. Please check your settings");
 	        	e.printStackTrace();
-			}catch (Exception e) {
-	            this.callback.onError("An unknown error happend... Please check your settings!");
+			}
+	        catch (Exception e) {
+	            this.callback.onError("An unknown error happend... Please check your settings.");
 	        	e.printStackTrace();
 			}
 	 
@@ -170,5 +177,15 @@ public abstract class WebServiceInteraction {
 		protected void setObject(JSONObject object) {
 			this.object = object;
 		}
+	}
+	/**
+	 * The class that is used to throw exceptions from the webservice
+	 * @author Mickael
+	 */
+	private class WebServiceException extends Exception {
+		public WebServiceException(String message) {
+			super(message);
+		}
+		
 	}
 }
