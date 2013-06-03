@@ -66,6 +66,8 @@ public abstract class WebServiceInteraction {
 	            if(response.getStatusLine().getStatusCode() !=200) {
 	            	if(response.getStatusLine().getStatusCode() == 504) {
 	            		throw new WebServiceException("The server is experiencing issues. Please either wait or change server.");
+	            	} else if(response.getStatusLine().getStatusCode() == 401) {
+	            		throw new WebServiceException("There was a problem with the authentication. Please check your settings.");
 	            	}
 	            	System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
 	            	//throw new Exception("The server didn't answer 200");
@@ -92,7 +94,7 @@ public abstract class WebServiceInteraction {
 	            JSONObject jsonObj = new JSONObject(jsonstr);
 	            result = findAnswer(jsonObj);
             } catch (UnsupportedEncodingException e) {
-	            this.callback.onError("There was an error with the Encoding. Check the server's address");
+	            this.callback.onError("There was an error with the Encoding. Please check the server's address");
 	            e.printStackTrace();
 	        } catch (ClientProtocolException e) {
 	            this.callback.onError("There was an error with the client protocol?!");
@@ -108,15 +110,15 @@ public abstract class WebServiceInteraction {
 				this.callback.onError(e.getMessage());
 				e.printStackTrace(); 
 			} catch (JSONException e) {
-	            this.callback.onError("The server returned an unexpected answer. It might be due to a server maintenance, but please check your settings");
+	            this.callback.onError("The server returned an unexpected answer. Feel free to change server in the settings");
 	            e.printStackTrace();
 
 	        } catch (URISyntaxException e) {
-	            this.callback.onError("The server's URL isn't well formatted. Please check your settings");
+	            this.callback.onError("The server's URL isn't well formatted. Please check the server address in the settings");
 	        	e.printStackTrace();
 			}
 	        catch (Exception e) {
-	            this.callback.onError("An unknown error happend... Please check your settings.");
+	            this.callback.onError("An unknown error happend... Maybe because of your connection, or of your settings?");
 	        	e.printStackTrace();
 			}
 	 
