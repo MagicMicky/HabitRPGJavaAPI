@@ -1,6 +1,5 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
-import java.util.List;
 
 /**
  * A reward. Contain a reward that you can see on the website

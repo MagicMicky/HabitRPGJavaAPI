@@ -1,6 +1,5 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
-import java.util.List;
 
 /**
  * An habit item. It contains the item called "Habits" on the website

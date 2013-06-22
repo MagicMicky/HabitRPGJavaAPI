@@ -1,6 +1,5 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
-import java.util.List;
 
 /**
  * A ToDo task that you can see of the website
