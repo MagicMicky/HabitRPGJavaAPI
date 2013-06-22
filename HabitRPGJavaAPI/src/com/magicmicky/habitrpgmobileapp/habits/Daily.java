@@ -1,6 +1,5 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
-import java.util.List;
 
 /**
  * A daily item. It contains the item called "Daily" on the website
@@ -12,7 +11,7 @@ public class Daily extends HabitItem{
 	private boolean completed;
 	private boolean[] repeat;
 	private long lastCompleted;
-	//TODO:private int streak;
+	private int streak;
 	/**
 	 * Construct a daily based on all the information needed
 	 * @param id the id of the daily
@@ -103,6 +102,18 @@ public class Daily extends HabitItem{
 	 */
 	public void setLastCompleted(long lastCompleted) {
 		this.lastCompleted = lastCompleted;
+	}
+	/**
+	 * @return the streak
+	 */
+	public int getStreak() {
+		return streak;
+	}
+	/**
+	 * @param streak the streak to set
+	 */
+	public void setStreak(int streak) {
+		this.streak = streak;
 	}
 
 

@@ -76,6 +76,7 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_TASK_UP = "up";
 			private static final String TAG_TASK_DOWN = "down";
 			private static final String TAG_TASK_REPEAT = "repeat";
+			private static final String TAG_TASK_STREAK="streak";
 			private static final String TAG_TASK_TAGS = "tags";
 			private static final String TAG_TASK_HISTORY="history";
 				private static final String TAG_TASK_HISTORY_DATE = "date";
@@ -229,6 +230,7 @@ public class GetUser extends WebServiceInteraction {
 								it = this.parseBase(it, habit);
 								it.setCompleted(habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false);
 								it.setRepeat(repeats);
+								it.setStreak(habit.has(TAG_TASK_STREAK) ? habit.getInt(TAG_TASK_STREAK) : 0);
 								it.setLastCompleted(lastday);
 								items.add(it);
 							}  catch (JSONException e) {
@@ -317,6 +319,7 @@ public class GetUser extends WebServiceInteraction {
 		 * @throws JSONException
 		 */
 		private void parseTaskTags(JSONObject tagsJSON, List<String> tagsIds) throws JSONException {
+				@SuppressWarnings("unchecked")
 				Iterator<String> it = tagsJSON.keys();
 				while(it.hasNext()) {
 					String tag = it.next();
