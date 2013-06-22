@@ -1,4 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.habits;
+
+import java.util.List;
+
 /**
  * An habit item. It contains the item called "Habits" on the website
  * @author MagicMicky
@@ -18,10 +21,16 @@ public class Habit extends HabitItem{
 	 * @param up whether or not the habit can be "upped"
 	 * @param down whether or not the habit can be "downed"
 	 */
-	public Habit(String id, String notes, String priority, String text, double value, boolean up, boolean down) {
+	public Habit(String id, String notes, String priority, String text, double value
+			, boolean up, boolean down) {
 		super(id, notes, priority, text, value);
 		this.setUp(up);
 		this.setDown(down);
+	}
+	public Habit() {
+		super();
+		this.setDown(true);
+		this.setUp(true);
 	}
 	/**
 	 * @return whether or not the habit can be "upped"

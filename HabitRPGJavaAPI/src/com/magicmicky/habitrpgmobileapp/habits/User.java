@@ -1,7 +1,9 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  * Contains the User that uses the application.
  * @author MagicMicky 
@@ -14,6 +16,7 @@ public class User {
 	private int lvl;
 	private int dayStart;
 	private UserLook look;
+	private Map<String, String> tags;
 	/**
 	 * Create a new User
 	 */
@@ -152,5 +155,17 @@ public class User {
 	 */
 	public void setDayStart(int dayStart) {
 		this.dayStart = dayStart;
+	}
+	/**
+	 * @return the tags
+	 */
+	public Map<String,String> getTags() {
+		return tags;
+	}
+	/**
+	 * @param tags2 the tags to set
+	 */
+	public void setTags(Map<String, String> tags2) {
+		this.tags = tags2;
 	}
 }

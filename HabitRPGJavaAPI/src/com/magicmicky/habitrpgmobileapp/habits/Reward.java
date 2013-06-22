@@ -1,4 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.habits;
+
+import java.util.List;
+
 /**
  * A reward. Contain a reward that you can see on the website
  * @author MagicMicky
@@ -17,6 +20,10 @@ public class Reward extends HabitItem{
 	public Reward(String id, String notes, String priority, String text,
 			double value) {
 		super(id, notes, priority, text, value);
+	}
+
+	public Reward() {
+		super();
 	}
 
 	@Override

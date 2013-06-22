@@ -1,5 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
+import java.util.List;
+
 /**
  * A daily item. It contains the item called "Daily" on the website
  * @author MagicMicky
@@ -31,6 +33,12 @@ public class Daily extends HabitItem{
 			double value, boolean completed, boolean[] repeat, long lastCompleted) {
 		this(id, notes, priority, text, value,completed,repeat);
 		this.setLastCompleted(lastCompleted);
+	}
+	public Daily() {
+		super();
+		this.setCompleted(false);
+		boolean[] r = new boolean[7];
+		this.setRepeat(r);
 	}
 	/**
 	 * @return if the daily is completed

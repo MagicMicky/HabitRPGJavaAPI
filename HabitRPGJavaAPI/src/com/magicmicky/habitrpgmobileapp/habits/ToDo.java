@@ -1,4 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.habits;
+
+import java.util.List;
+
 /**
  * A ToDo task that you can see of the website
  * You can set a complete date to a ToDo, and you can complete them using a boolean
@@ -24,6 +27,12 @@ public class ToDo extends HabitItem{
 		super(id, notes, priority, text, value);
 		this.setCompleted(completed);
 		this.setDate(date);
+	}
+
+	public ToDo() {
+		super();
+		this.setCompleted(false);
+		this.setDate(null);
 	}
 
 	/**

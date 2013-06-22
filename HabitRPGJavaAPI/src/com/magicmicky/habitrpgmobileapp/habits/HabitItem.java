@@ -1,5 +1,7 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
+import java.util.List;
+
 /**
  * Custom Item that regroup all the others.
  * @author MagicMicky
@@ -11,6 +13,7 @@ public abstract class HabitItem {
 	private String priority;
 	private String text;
 	private double value;
+	private List<String> tagsId;
 	/**
 	 * Create a new HabitItem from what is necessary
 	 * @param id the id of the habit
@@ -25,7 +28,11 @@ public abstract class HabitItem {
 		this.setPriority(priority);
 		this.setText(text);
 		this.setValue(value);
-		
+		this.tagsId=null;
+
+	}
+	public HabitItem() {
+		this("","","!","",0);
 	}
 	/**
 	 * @return the id
@@ -92,6 +99,16 @@ public abstract class HabitItem {
 		this.value = value;
 	}
 	
+
+	public List<String> getTagsId() {
+		return tagsId;
+	}
+	/**
+	 * @param tagsId the tagsId to set
+	 */
+	public void setTagsId(List<String> tagsId) {
+		this.tagsId = tagsId;
+	}
 	/**
 	 * Returns a string of the type of the HabitItem
 	 * @return the string of the Item type
@@ -102,6 +119,8 @@ public abstract class HabitItem {
 	 * @return the Item in json (ready to send as POST)
 	 */
 	public abstract String getJSONString();
-
+	/**
+	 * @return the tagsId
+	 */
 
 }

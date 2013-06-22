@@ -2,7 +2,10 @@ package com.magicmicky.habitrpgmobileapp.onlineapi;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -51,6 +54,9 @@ public class GetUser extends WebServiceInteraction {
 		private static final String TAG_HABITSID = "habitIds";
 		private static final String TAG_TODOIDS = "todoIds";
 		private static final String TAG_REWARDIDS = "rewardIds";
+		private static final String TAG_TAGS = "tags";
+			private static final String TAG_TAGS_ID = "id";
+			private static final String TAG_TAGS_NAME = "name";
 		private static final String TAG_STATS = "stats";
 			private static final String TAG_XP = "exp";
 			private static final String TAG_GP = "gp";
@@ -70,6 +76,7 @@ public class GetUser extends WebServiceInteraction {
 			private static final String TAG_TASK_UP = "up";
 			private static final String TAG_TASK_DOWN = "down";
 			private static final String TAG_TASK_REPEAT = "repeat";
+			private static final String TAG_TASK_TAGS = "tags";
 			private static final String TAG_TASK_HISTORY="history";
 				private static final String TAG_TASK_HISTORY_DATE = "date";
 		private static final String TAG_AUTH = "auth";
@@ -127,6 +134,13 @@ public class GetUser extends WebServiceInteraction {
 					this.callback.onError("An error happend. Your avatar's look couldn't be retrieved from the server");
 				e.printStackTrace();
 			}
+			try {
+				this.parseUsersTags(user);
+			} catch (JSONException e) {
+				if(error<3)
+					this.callback.onError("An error happend. Your tags couldn't be parsed");
+				e.printStackTrace();
+			}
 				callback.onUserReceived(user);
 		}
 		
@@ -167,7 +181,21 @@ public class GetUser extends WebServiceInteraction {
 			}
 		}
 
-
+		/**
+		 * Parses the user's tag
+		 * @param user the user to put the information in
+		 */
+		private void parseUsersTags(User user) throws JSONException {
+			if(this.getObject().has(TAG_TAGS)) {
+				Map<String,String> tags = new HashMap<String,String>();
+				JSONArray tags_array = this.getObject().getJSONArray(TAG_TAGS);
+				for(int i=0;i<tags_array.length();i++) {
+					JSONObject tag_obj = tags_array.getJSONObject(i);
+					tags.put(tag_obj.getString(TAG_TAGS_ID), tag_obj.getString(TAG_TAGS_NAME));
+				}
+				user.setTags(tags);
+			}
+		}
 		/**
 		 * Parse the different habits of an user
 		 * @param user the user to put the information in
@@ -181,9 +209,10 @@ public class GetUser extends WebServiceInteraction {
 					for(int i=0;i<dailies.length();i++) {
 						if(tasks.has(dailies.getString(i))) {
 							try {
-								HabitItem it;
+								Daily it;
 								JSONObject habit = tasks.getJSONObject(dailies.getString(i));
 								long lastday=0;
+								
 								if(habit.has(TAG_TASK_HISTORY)) {
 									JSONArray history = habit.getJSONArray(TAG_TASK_HISTORY);
 									lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
@@ -195,14 +224,12 @@ public class GetUser extends WebServiceInteraction {
 										repeats[j] = repeatTag.getBoolean(whatDay(j));
 									}
 								}
-								it = new Daily(habit.getString(TAG_TASK_ID)
-										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-										, habit.getString(TAG_TASK_TEXT)
-										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-										, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
-										, repeats
-										, lastday);
+								
+								it = new Daily();
+								it = this.parseBase(it, habit);
+								it.setCompleted(habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false);
+								it.setRepeat(repeats);
+								it.setLastCompleted(lastday);
 								items.add(it);
 							}  catch (JSONException e) {
 								this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
@@ -220,14 +247,11 @@ public class GetUser extends WebServiceInteraction {
 						try {
 							if(tasks.has(todo.getString(i))) {
 								JSONObject habit = tasks.getJSONObject(todo.getString(i));
-								HabitItem it;
-								it = new ToDo(habit.getString(TAG_TASK_ID)
-										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-										, habit.getString(TAG_TASK_TEXT)
-										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-										, habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false
-										, habit.has(TAG_TASK_DATE) ? habit.getString(TAG_TASK_DATE) : null);
+								ToDo it;
+								it = new ToDo();
+								it = parseBase(it, habit);
+								it.setCompleted(habit.has(TAG_TASK_COMPLETED) ? habit.getBoolean(TAG_TASK_COMPLETED) : false);
+								it.setDate(habit.has(TAG_TASK_DATE) ? habit.getString(TAG_TASK_DATE) : null);
 								items.add(it);
 							}
 						}  catch (JSONException e) {
@@ -245,14 +269,11 @@ public class GetUser extends WebServiceInteraction {
 						try {
 							if(tasks.has(habitH.getString(i))) {
 								JSONObject habit= tasks.getJSONObject(habitH.getString(i));
-								HabitItem it;
-								it = new Habit(habit.getString(TAG_TASK_ID)
-										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-										, habit.getString(TAG_TASK_TEXT)
-										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0
-										, habit.has(TAG_TASK_UP) ? habit.getBoolean(TAG_TASK_UP) : false
-										, habit.has(TAG_TASK_DOWN) ? habit.getBoolean(TAG_TASK_DOWN) : false);
+								Habit it;
+								it = new Habit();
+								it = parseBase(it, habit);
+								it.setUp(habit.has(TAG_TASK_UP) ? habit.getBoolean(TAG_TASK_UP) : false);
+								it.setDown(habit.has(TAG_TASK_DOWN) ? habit.getBoolean(TAG_TASK_DOWN) : false);
 								items.add(it);
 							}
 						} catch (JSONException e) {
@@ -270,12 +291,9 @@ public class GetUser extends WebServiceInteraction {
 						try  {
 							if(tasks.has(reward.getString(i))) {
 								JSONObject habit= tasks.getJSONObject(reward.getString(i));
-								HabitItem it;
-								it = new Reward(habit.getString(TAG_TASK_ID)
-										, habit.has(TAG_TASK_NOTES) ? habit.getString(TAG_TASK_NOTES) : ""
-										, habit.has(TAG_TASK_PRIORITY) ? habit.getString(TAG_TASK_PRIORITY) : "!"
-										, habit.getString(TAG_TASK_TEXT)
-										, habit.has(TAG_TASK_VALUE) ? habit.getDouble(TAG_TASK_VALUE) : 0);
+
+								Reward it = new Reward();
+								it = parseBase(it, habit);
 								items.add(it);
 							}
 						} catch (JSONException e) {
@@ -292,6 +310,50 @@ public class GetUser extends WebServiceInteraction {
 			
 		}
 
+		/**
+		 * Parse a task tag
+		 * @param tagsJSON the JSONObject that contains the tags
+		 * @param tagsIds the tagsId to modify
+		 * @throws JSONException
+		 */
+		private void parseTaskTags(JSONObject tagsJSON, List<String> tagsIds) throws JSONException {
+				Iterator<String> it = tagsJSON.keys();
+				while(it.hasNext()) {
+					String tag = it.next();
+					if(tagsJSON.getBoolean(tag))
+						tagsIds.add(tag);
+				}
+						
+		}
+		
+		
+		/**
+		 * Parse the basic stuff of a task
+		 * @param it the item to modify of type T
+		 * @param habit the JSONObject of the task
+		 * @return an HabitItem
+		 * @throws JSONException
+		 * @see HabitItem
+		 */
+		private <T extends HabitItem> T parseBase(T it, JSONObject habit) throws JSONException {
+			if(habit.has(TAG_TASK_ID))
+				it.setId(habit.getString(TAG_TASK_ID));
+			if(habit.has(TAG_TASK_NOTES))
+				it.setNotes(habit.getString(TAG_TASK_NOTES));
+			if(habit.has(TAG_TASK_PRIORITY))
+				it.setPriority(habit.getString(TAG_TASK_PRIORITY));
+			if(habit.has(TAG_TASK_TEXT))
+				it.setText(habit.getString(TAG_TASK_TEXT));
+			if(habit.has(TAG_TASK_VALUE))
+				it.setValue(habit.getDouble(TAG_TASK_VALUE));
+			if(habit.has(TAG_TASK_TAGS)) {
+				List<String> tags = new ArrayList<String>();
+				JSONObject tagsJSON = habit.getJSONObject(TAG_TASK_TAGS);
+				this.parseTaskTags(tagsJSON, tags);
+				it.setTagsId(tags);
+			}
+			return it;
+		}
 		/**
 		 * Parse the information of an user
 		 * @param user the user to put the information in
