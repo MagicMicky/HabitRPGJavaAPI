@@ -187,15 +187,18 @@ public class GetUser extends WebServiceInteraction {
 		 * @param user the user to put the information in
 		 */
 		private void parseUsersTags(User user) throws JSONException {
+			Map<String,String> tags = new HashMap<String,String>();
 			if(this.getObject().has(TAG_TAGS)) {
-				Map<String,String> tags = new HashMap<String,String>();
 				JSONArray tags_array = this.getObject().getJSONArray(TAG_TAGS);
 				for(int i=0;i<tags_array.length();i++) {
 					JSONObject tag_obj = tags_array.getJSONObject(i);
 					tags.put(tag_obj.getString(TAG_TAGS_ID), tag_obj.getString(TAG_TAGS_NAME));
 				}
-				user.setTags(tags);
+			} else {
+				callback.onError("Error: No tags were found for your profile");
 			}
+			user.setTags(tags);
+
 		}
 		/**
 		 * Parse the different habits of an user
@@ -318,15 +321,17 @@ public class GetUser extends WebServiceInteraction {
 		 * @param tagsIds the tagsId to modify
 		 * @throws JSONException
 		 */
-		private void parseTaskTags(JSONObject tagsJSON, List<String> tagsIds) throws JSONException {
+		private List<String> parseTaskTags(JSONObject tagsJSON) throws JSONException {
 				@SuppressWarnings("unchecked")
+				List<String> tagsIds = new ArrayList<String>();
 				Iterator<String> it = tagsJSON.keys();
 				while(it.hasNext()) {
 					String tag = it.next();
 					if(tagsJSON.getBoolean(tag))
 						tagsIds.add(tag);
 				}
-						
+				
+				return tagsIds;
 		}
 		
 		
@@ -337,7 +342,7 @@ public class GetUser extends WebServiceInteraction {
 		 * @return an HabitItem
 		 * @throws JSONException
 		 * @see HabitItem
-		 */
+		 */ 
 		private <T extends HabitItem> T parseBase(T it, JSONObject habit) throws JSONException {
 			if(habit.has(TAG_TASK_ID))
 				it.setId(habit.getString(TAG_TASK_ID));
@@ -350,9 +355,8 @@ public class GetUser extends WebServiceInteraction {
 			if(habit.has(TAG_TASK_VALUE))
 				it.setValue(habit.getDouble(TAG_TASK_VALUE));
 			if(habit.has(TAG_TASK_TAGS)) {
-				List<String> tags = new ArrayList<String>();
 				JSONObject tagsJSON = habit.getJSONObject(TAG_TASK_TAGS);
-				this.parseTaskTags(tagsJSON, tags);
+				List<String> tags = this.parseTaskTags(tagsJSON);
 				it.setTagsId(tags);
 			}
 			return it;

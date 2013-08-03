@@ -71,24 +71,20 @@ public class Daily extends HabitItem{
 	}
 	@Override
 	public String getJSONString() {
-		StringBuilder json = new StringBuilder();
-		json.append("{\"type\":\"" + this.getType() + "\"," );
-		json.append("\"text\":\"" + this.getText() + "\"," );
-		json.append("\"value\":0," );
-		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
-			json.append("\"notes\":\"" + this.getNotes() + "\"," );
-		if(this.getRepeat() != null) {
-			json.append("\"repeat\":{" );
-			for(int i=0;i<7;i++) {
-				json.append("\"" + Daily.days[i] + "\": " + this.getRepeat()[i] + ",");
+		StringBuilder json = new StringBuilder()
+		.append("{")
+			.append(super.getJSONBaseString());
+			if(this.getRepeat() != null) {
+				json.append("\"repeat\":{");
+				for(int i=0;i<7;i++) {
+					json.append("\"").append(Daily.days[i]).append("\": ").append(this.getRepeat()[i]).append(",");
+				}
+				json =json.deleteCharAt(json.length()-1);
+				json.append("},");
 			}
-			json =json.deleteCharAt(json.length()-1);
-			json.append("},");
-		}
-		//json.append("\"streak\":" + streak + ",");
-		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
-		
-		System.out.println("STRING--" + json.toString());
+			json.append("\"streak\":").append(this.getStreak()).append(",");
+			json.append("\"completed\":" + (this.isCompleted() ? "true":"false"))
+		.append("}");
 		return json.toString();
 	}
 	/**

@@ -1,5 +1,6 @@
 package com.magicmicky.habitrpgmobileapp.habits;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public abstract class HabitItem {
 		this.setPriority(priority);
 		this.setText(text);
 		this.setValue(value);
-		this.tagsId=null;
+		this.tagsId=new ArrayList<String>();
 
 	}
 	public HabitItem() {
@@ -99,7 +100,9 @@ public abstract class HabitItem {
 		this.value = value;
 	}
 	
-
+	/**
+	 * @return the tagsId
+	 */
 	public List<String> getTagsId() {
 		return tagsId;
 	}
@@ -108,6 +111,16 @@ public abstract class HabitItem {
 	 */
 	public void setTagsId(List<String> tagsId) {
 		this.tagsId = tagsId;
+	}
+	
+	public boolean isTagged(List<String> tags) {
+		if(this.getTagsId()==null) {
+			System.out.println("getTags is null!!!");
+		}
+		if(this.getTagsId() != null && this.getTagsId().containsAll(tags))
+			return true;
+		
+		return false;
 	}
 	/**
 	 * Returns a string of the type of the HabitItem
@@ -119,8 +132,26 @@ public abstract class HabitItem {
 	 * @return the Item in json (ready to send as POST)
 	 */
 	public abstract String getJSONString();
-	/**
-	 * @return the tagsId
-	 */
 
+	/**
+	 * Creates a JSON String for this HabitItem using the basic information.<br>
+	 * Doesn't have the necessary open and close brackets to create an item.
+	 * @return
+	 */
+	protected String getJSONBaseString() {
+		StringBuilder json = new StringBuilder()
+			.append("\"type\":\"").append(this.getType()).append("\"," )
+			.append("\"text\":\"").append(this.getText()).append("\"," );
+			if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
+				json.append("\"notes\":\"").append(this.getNotes()).append("\"," );
+			json.append("\"value\":").append(this.getValue()).append(",");
+			if(this.getTagsId()!=null) {
+				json.append("\"tags\":{");
+				for(String tagId : this.getTagsId()) {
+					json.append("\"").append(tagId).append("\":").append("true");
+				}
+				json.append("},");
+			}
+		return json.toString();
+	}
 }

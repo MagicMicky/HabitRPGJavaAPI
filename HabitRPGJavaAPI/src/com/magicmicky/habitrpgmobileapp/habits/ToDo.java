@@ -71,16 +71,13 @@ public class ToDo extends HabitItem{
 
 	@Override
 	public String getJSONString() {
-		StringBuilder json = new StringBuilder();
-		json.append("{\"type\":\"" + this.getType() + "\"," );
-		json.append("\"text\":\"" + this.getText() + "\"," );
-		json.append("\"value\":0," );
-		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
-			json.append("\"notes\":\"" + this.getNotes() + "\"," );
-		if(this.getDate()!=null && this.getDate()!="")
-			json.append("\"date\":\"" + this.getDate() + "\"," );
-		json.append("\"completed\":" + (this.isCompleted() ? "true":"false") + "}" );
-		System.out.println("STRING--" + json.toString());
+		StringBuilder json = new StringBuilder()
+		.append("{")
+			.append(super.getJSONBaseString());
+			if(this.getDate()!=null && this.getDate()!="")
+				json.append("\"date\":\"").append(this.getDate()).append("\",");
+			json.append("\"completed\":").append((this.isCompleted() ? "true":"false"))
+		.append("}" );
 		return json.toString();
 	}
 

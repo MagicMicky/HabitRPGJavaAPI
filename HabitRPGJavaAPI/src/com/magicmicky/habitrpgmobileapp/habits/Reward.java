@@ -32,12 +32,11 @@ public class Reward extends HabitItem{
 
 	@Override
 	public String getJSONString() {
-			StringBuilder json = new StringBuilder();
-			json.append("{\"type\":\"" + this.getType() + "\"," );
-			json.append("\"text\":\"" + this.getText() + "\"," );
-			if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
-				json.append("\"notes\":\"" + this.getNotes() + "\"," );
-			json.append("\"value\":" + this.getValue() + "}" );
+			StringBuilder json = new StringBuilder()
+			.append("{")
+				.append(super.getJSONBaseString())
+			.append("}");
+			
 			return json.toString();
 	}
 

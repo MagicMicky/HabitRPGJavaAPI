@@ -58,14 +58,12 @@ public class Habit extends HabitItem{
 		this.down = down;
 	}
 	public String getJSONString() {
-		StringBuilder json = new StringBuilder();
-		json.append("{\"type\":\"" + this.getType() + "\"," );
-		json.append("\"text\":\"" + this.getText() + "\"," );
-		json.append("\"value\":0," );
-		if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
-			json.append("\"note\":\"" + this.getNotes() + "\"," );
-		json.append("\"up\":" + (this.isUp() ? "true":"false") + "," );
-		json.append("\"down\":" + (this.isDown() ? "true":"false") + "}" );
+		StringBuilder json = new StringBuilder()
+		.append("{")
+			.append(super.getJSONBaseString())
+			.append("\"up\":").append((this.isUp() ? "true":"false")).append(",")
+			.append("\"down\":").append((this.isDown() ? "true":"false"))
+		.append("}");
 		return json.toString();
 	}
 	@Override

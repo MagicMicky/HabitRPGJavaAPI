@@ -1,10 +1,14 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +19,7 @@ import com.magicmicky.habitrpgmobileapp.habits.HabitType;
 import com.magicmicky.habitrpgmobileapp.habits.Reward;
 import com.magicmicky.habitrpgmobileapp.habits.ToDo;
 /**
- * Allows creation of an new task using POST /api/v1/user/task
+ * Allows creation of a new task using POST /api/v1/user/task
  * @author Mickael
  * @see OnHabitsAPIResult#onPostTaskAnswer(HabitItem)
  */
@@ -61,6 +65,7 @@ public class PostTask extends WebServiceInteraction {
 		private static final String TAG_TASK_COMPLETED = "completed";
 		private static final String TAG_TASK_UP = "up";
 		private static final String TAG_TASK_DOWN = "down";
+		private static final String TAG_TASK_TAGS = "tags";
 		public PostTaskData(JSONObject obj, OnHabitsAPIResult callback) {
 			super(obj, callback);
 			this.setObject(obj);
@@ -82,9 +87,12 @@ public class PostTask extends WebServiceInteraction {
 			if(item == null) {
 				this.callback.onError("There was a problem with the added task...");
 			}
+			this.parseTags(item);
 			if(this.callback != null)
 				this.callback.onPostTaskAnswer(item);
 		}
+
+
 		/**
 		 * Parse a task
 		 * @return
@@ -112,6 +120,29 @@ public class PostTask extends WebServiceInteraction {
 			}
 			return item;	
 		}
+		
+		/**
+		 * Parse the tags for an HabitItem
+		 * @param item the habitItem where we need to put the tags
+		 */
+		private void parseTags(HabitItem item) {
+			List<String> tags= new ArrayList<String>();
+			JSONObject tagsObj;
+			try {
+				tagsObj = this.getObject().getJSONObject(TAG_TASK_TAGS);
+				Iterator<String> it = tagsObj.keys();
+				while(it.hasNext()) {
+					String tagId = it.next();
+					if(tagsObj.getBoolean(tagId)) {
+						tags.add(tagId);
+					}
+				}
+				item.setTagsId(tags);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+			
 		
 	}
 
