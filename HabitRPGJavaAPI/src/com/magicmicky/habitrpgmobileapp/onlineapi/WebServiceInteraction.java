@@ -288,8 +288,63 @@ public abstract class WebServiceInteraction {
 			this.currentError=error;
 			this.errorDetails = details;
 		}
-		public int getError() {
+		public int getErrorNumber() {
 			return currentError;
+		}
+		public String getError() {
+			String error="";
+			switch(currentError) {
+				case HABITRPG_SERVER_API_CALL_NOT_FOUND:
+				case INTERNAL_WRONG_URL:
+					error="The server wasn't found. Please check your hosts settings.";
+					break;
+				case HABITRPG_INTERNAL_ERROR:
+					error="HabitRPG returned an error";
+					break;
+				case AUTH_PB:
+					error="There's a problem with the authentication settings. Please check your api and user key.";
+					break;
+				case SERV_EXPERIENCING_ISSUES:
+					error="HabitRPG's server is having some trouble. Feel free to switch to the beta server";
+					break;
+				case PARSING_ERROR:
+					error="Part of the answer couldn't be parsed";
+					break;
+				case INTERNAL_NO_CONNECTION:
+					error="Error. Please check your connection";
+					break;
+				case JSON_USER_TASKS:
+					error="Your tasks weren't found!";
+					break;
+				case JSON_USER_AVATAR_ERR:
+					error="Your avatar information couldn't be found!";
+					break;
+				case JSON_USER_PERS_INFO:
+					error="Your personnal information couldn't be found!";
+					break;
+				case JSON_USER_TAGS:
+					error="Your tags couldn't be found!";
+					break;
+				case JSON_TASKS_UNPARSABLE:
+					error="Some of your tasks can't be found by this client!";
+					break;
+
+				case JSON_TASK_DIRECTION:
+					error="Error while updating a task status!";
+					break;
+
+				case TASK_DELETE_FAIL:
+					error="Error deleting a task!";
+					break;
+				case INTERNAL_OTHER:
+					error="An internal unknown  error happend!";
+					break;
+				default:
+					error="An unknown error happened!";
+					break;
+				
+			}
+			return error;
 		}
 		public String getDetails() {
 			return errorDetails;
