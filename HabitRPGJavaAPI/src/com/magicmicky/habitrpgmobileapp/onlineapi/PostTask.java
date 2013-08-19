@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,7 +80,9 @@ public class PostTask extends WebServiceInteraction {
 			if(this.getObject().has(TAG_ERR)) {
 				
 				try {
-					this.callback.onError(this.getObject().getString(TAG_ERR));
+					WebServiceException ex = new WebServiceException(WebServiceException.HABITRPG_INTERNAL_ERROR,this.getObject().getString(TAG_ERR));
+					this.callback.onError(ex);
+
 				} catch (JSONException e) {
 					e.printStackTrace();
 					//Should never happen since we check that it has an error;
@@ -90,7 +91,8 @@ public class PostTask extends WebServiceInteraction {
 			}
 			HabitItem item  = this.parseTask();
 			if(item == null) {
-				this.callback.onError("There was a problem with the added task...");
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+				this.callback.onError(ex);
 			}
 			this.parseTags(item);
 			if(this.callback != null)
@@ -120,7 +122,8 @@ public class PostTask extends WebServiceInteraction {
 					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0,obj.has(TAG_TASK_UP)? obj.getBoolean(TAG_TASK_UP) : false, obj.has(TAG_TASK_DOWN) ? obj.getBoolean(TAG_TASK_DOWN) : false);
 				}
 			} catch (JSONException e) {
-				this.callback.onError("An error happend. We weren't able to save the task...");
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+				this.callback.onError(ex);
 				e.printStackTrace();
 			}
 			return item;	
@@ -136,6 +139,7 @@ public class PostTask extends WebServiceInteraction {
 			if(this.getObject().has(TAG_TASK_TAGS)) {
 				try {
 					tagsObj = this.getObject().getJSONObject(TAG_TASK_TAGS);
+					@SuppressWarnings("unchecked")
 					Iterator<String> it = tagsObj.keys();
 					while(it.hasNext()) {
 						String tagId = it.next();

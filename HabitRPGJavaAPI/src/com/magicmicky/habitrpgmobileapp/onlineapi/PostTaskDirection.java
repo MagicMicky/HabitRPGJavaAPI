@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 /**
  * POST a task in a direction to the API
  * @author MagicMicky
@@ -74,9 +75,12 @@ public class PostTaskDirection extends WebServiceInteraction {
 					 callback.onPostResult(xp, hp, gold, lvl, delta);
 
 			} catch (JSONException e) {
-				 if(callback != null)
-					 callback.onError("The server returned an unexpected response. We weren't able to post your task.");
-				e.printStackTrace();
+				 if(callback != null) {
+					WebServiceException ex = new WebServiceException(WebServiceException.PARSING_ERROR);
+					this.callback.onError(ex);
+				
+				 }
+				 e.printStackTrace();
 			}
 		}
 		

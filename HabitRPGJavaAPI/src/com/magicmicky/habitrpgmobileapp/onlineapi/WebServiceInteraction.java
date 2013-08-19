@@ -1,7 +1,6 @@
 package com.magicmicky.habitrpgmobileapp.onlineapi;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -49,12 +48,15 @@ public abstract class WebServiceInteraction {
 	 */
 	public final Answer getData() {
 		Answer result=null;
+		HttpClient client;
+		HttpRequestBase request = null;
+
 	        // Making HTTP request
 	        try {
-	            HttpClient client = new DefaultHttpClient();
-	            HttpRequestBase request = this.getRequest();
 	            String address = config.getAddress();
 	            address = address.concat(address.charAt(address.length()-1) == '/' ? SUFFIX + this.CMD : "/api/v1/" + this.CMD);
+	            client = new DefaultHttpClient();
+	            request = this.getRequest();
 
 	            request.setURI(new URI(address));
 	            request.addHeader("x-api-key", config.getApi());
@@ -62,62 +64,86 @@ public abstract class WebServiceInteraction {
 	            request.addHeader("Accept-Encoding", "gzip");
 	            
 	            HttpResponse response = client.execute(request);
-	            if(response.getStatusLine().getStatusCode() !=200) {
-	            	if(response.getStatusLine().getStatusCode() == 504) {
-	            		throw new WebServiceException("The server is experiencing issues. Please either wait or change server.");
-	            	} else if(response.getStatusLine().getStatusCode() == 401) {
-	            		throw new WebServiceException("There was a problem with the authentication. Please check your settings.");
+	            if(response.getStatusLine().getStatusCode() == 204) {//Tasks deleted
+            		String jsonstr = "{\"task_deleted\":true}";
+		            JSONObject jsonObj = new JSONObject(jsonstr);
+    	            result = findAnswer(jsonObj); 
+            	}
+	            else {
+	            	if(response.getStatusLine().getStatusCode() == 404) {
+	            		throw new WebServiceException(WebServiceException.HABITRPG_SERVER_API_CALL_NOT_FOUND);
 	            	}
-	            	System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
-	            	//throw new Exception("The server didn't answer 200");
+	            	if(response.getStatusLine().getStatusCode() == 504) {
+	            		throw new WebServiceException(WebServiceException.SERV_EXPERIENCING_ISSUES);
+	            		//throw new WebServiceException("The server is experiencing issues. Please either wait or change server.");
+	            	} else if(response.getStatusLine().getStatusCode() == 401) {
+	            		//TODO:Should continue reading stuff and check if body errors = No user found.
+	            		throw new WebServiceException(WebServiceException.AUTH_PB);
+	            	} else {
+	            		System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
+	            	}//throw new Exception("The server didn't answer 200");
+		            
+		            HttpEntity httpEntity = response.getEntity();
+		            InputStream is = httpEntity.getContent();          
+		            Header contentEncoding = response.getFirstHeader("Content-Encoding");
+		            if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+		                is = new GZIPInputStream(is);
+		            }
+	
+		            
+		            BufferedReader reader = new BufferedReader(new InputStreamReader(
+		                    is));
+		            StringBuilder sb = new StringBuilder();
+		            String line = null;
+		            while ((line = reader.readLine()) != null) {
+		                sb.append(line + "\n");
+	
+		            }
+		            is.close();
+		            String jsonstr = sb.toString();
+		            System.out.println(jsonstr);
+		            JSONObject jsonObj = new JSONObject(jsonstr);
+		            result = findAnswer(jsonObj);
 	            }
-	            HttpEntity httpEntity = response.getEntity();
-	            InputStream is = httpEntity.getContent();          
-	            Header contentEncoding = response.getFirstHeader("Content-Encoding");
-	            if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
-	                is = new GZIPInputStream(is);
-	            }
-
-	            
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                    is));
-	            StringBuilder sb = new StringBuilder();
-	            String line = null;
-	            while ((line = reader.readLine()) != null) {
-	                sb.append(line + "\n");
-
-	            }
-	            is.close();
-	            String jsonstr = sb.toString();
-	            System.out.println(jsonstr);
-	            JSONObject jsonObj = new JSONObject(jsonstr);
-	            result = findAnswer(jsonObj);
             } catch (UnsupportedEncodingException e) {
-	            this.callback.onError("There was an error with the Encoding. Please check the server's address");
+				WebServiceException ex = new WebServiceException(WebServiceException.INTERNAL_WRONG_URL);
+				this.callback.onError(ex);
 	            e.printStackTrace();
 	        } catch (ClientProtocolException e) {
-	            this.callback.onError("There was an error with the client protocol?!");
+				this.callback.onError(new WebServiceException(WebServiceException.INTERNAL_OTHER,e.getMessage()));
 	            e.printStackTrace();
 	        } catch(UnknownHostException e) {
-	            this.callback.onError("No address associated with hostname. Please check your connection and your host settings");
+	            this.callback.onError(new WebServiceException(WebServiceException.INTERNAL_NO_CONNECTION));
 	        	e.printStackTrace();
-			}  catch (IOException e) {
+			}/*  catch (IOException e) {
 	            this.callback.onError("An error happened... Are you still connected to the internet?");
 	            e.printStackTrace();
 
-	        } catch(WebServiceException e) {
-				this.callback.onError(e.getMessage());
+	        }*/ catch(WebServiceException e) {//TODO:Custom exception?!?!
+				this.callback.onError(new WebServiceException(WebServiceException.INTERNAL_OTHER,e.getMessage()));
 				e.printStackTrace(); 
 			} catch (JSONException e) {
-	            this.callback.onError("The server returned an unexpected answer. Feel free to change server in the settings");
-	            e.printStackTrace();
+				if(request!=null) {
+					String uri = request.getURI().toString();
+					if(!uri.contains("habitrpg.com") || !uri.contains("https://") ) {
+						WebServiceException ex = new WebServiceException(WebServiceException.INTERNAL_WRONG_URL);
+						this.callback.onError(ex);
+					} else {
+						WebServiceException ex = new WebServiceException(WebServiceException.SERV_EXPERIENCING_ISSUES);
+						this.callback.onError(ex);
+			            e.printStackTrace();
+					}
 
+				}
 	        } catch (URISyntaxException e) {
-	            this.callback.onError("The server's URL isn't well formatted. Please check the server address in the settings");
+				WebServiceException ex = new WebServiceException(WebServiceException.INTERNAL_WRONG_URL);
+				this.callback.onError(ex);
 	        	e.printStackTrace();
 			}
 	        catch (Exception e) {
-	            this.callback.onError("An unknown error happend... Maybe because of your connection, or of your settings?");
+				WebServiceException ex = new WebServiceException(WebServiceException.INTERNAL_OTHER);
+				this.callback.onError(ex);
+
 	        	e.printStackTrace();
 			}
 	 
@@ -183,10 +209,90 @@ public abstract class WebServiceInteraction {
 	 * The class that is used to throw exceptions from the webservice
 	 * @author Mickael
 	 */
-	private class WebServiceException extends Exception {
-		public WebServiceException(String message) {
-			super(message);
-		}
+	@SuppressWarnings("serial")
+	public class WebServiceException extends Exception {
+		/**
+		 * Happens when the server api call wasn't found.
+		 */
+		public final static int HABITRPG_SERVER_API_CALL_NOT_FOUND=-1;
 		
+		/**
+		 * Happens when HabitRPG sends a "err" json tag
+		 */
+		public final static int HABITRPG_INTERNAL_ERROR=0;
+		/**
+		 * Happens when there is a problem with the authentication
+		 */
+		public final static int AUTH_PB = 1;
+		/**
+		 * Happens when the server is experiencing issues
+		 */
+		public final static int SERV_EXPERIENCING_ISSUES = 2;
+		/**
+		 * Happens when something couldn't be parsed
+		 */
+		public final static int PARSING_ERROR = 3;
+		/**
+		 * Happens when the user seems to have no connection
+		 */
+		public final static int INTERNAL_NO_CONNECTION=4;
+		
+		/**
+		 * Could happend when a user cut the connection while requesting some info.
+		 */
+		public final static int INTERNAL_OTHER = 5;
+		public static final int INTERNAL_WRONG_URL = 6;
+
+		/*
+		 * JSON errors:
+		 */
+		/**
+		 * Happen when the user's tasks couldn't be parsed.
+		 */
+		public final static int JSON_USER_TASKS = 100;
+		/**
+		 * Happen when a user avatar couldn't be parsed
+		 */
+		public final static int JSON_USER_AVATAR_ERR = 101;
+		/**
+		 * Happen when a user's personnal info couldn't be parsed
+		 */
+		public final static int JSON_USER_PERS_INFO = 102;
+		/**
+		 * Happen when a user's tags couldn't be parsed;
+		 */
+		public final static int JSON_USER_TAGS = 103;
+		
+		/**
+		 * Happen when a single task couldn't be parsed;
+		 */
+		public final static int JSON_TASKS_UNPARSABLE = 200;
+		
+		/**
+		 * Happen when a task couldn't be set to "up" or "down"
+		 */
+		public final static int JSON_TASK_DIRECTION = 210;
+		
+		/**
+		 * Happen when a task couldn't be deleted;
+		 */
+		public static final int TASK_DELETE_FAIL = 220;
+
+		private int currentError;
+
+		private String errorDetails;
+		public WebServiceException(int error) {
+			this.currentError=error;
+		}
+		public WebServiceException(int error, String details) {
+			this.currentError=error;
+			this.errorDetails = details;
+		}
+		public int getError() {
+			return currentError;
+		}
+		public String getDetails() {
+			return errorDetails;
+		}
 	}
 }

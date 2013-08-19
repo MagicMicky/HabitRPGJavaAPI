@@ -32,11 +32,13 @@ public interface OnHabitsAPIResult {
 	 * This is called when there has been an error from the API
 	 * @param message an optional error message
 	 */
-	void onError(String message);
+	void onError(WebServiceInteraction.WebServiceException error);
 	/**
 	 * This is called when a new Task is added
 	 * @param task
 	 */
 	void onPostTaskAnswer(HabitItem task);
 
+	
+	void onDeletedTask(boolean deleted);
 }

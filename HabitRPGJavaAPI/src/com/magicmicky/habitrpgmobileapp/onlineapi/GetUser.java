@@ -125,30 +125,35 @@ public class GetUser extends WebServiceInteraction {
 			try {
 				this.parseHabits(user);
 			}  catch (JSONException e) {
-				this.callback.onError("An error happend. Your tasks couldn't be parsed");
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_USER_TASKS);
+				this.callback.onError(ex);
 				e.printStackTrace();
 				error++;
 			}
 			try {
 				this.parseUserInfos(user);
 			} catch (JSONException e) {
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_USER_PERS_INFO);
 				if(error<1)
-					this.callback.onError("An error happend. Your personnal information couldn't be parsed");
+					this.callback.onError(ex);
 				e.printStackTrace();
 				error++;
 			}
 			try  {
 				this.parseUserLook(user);
 			} catch (JSONException e) {
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_USER_AVATAR_ERR);
+
 				if(error<2)
-					this.callback.onError("An error happend. Your avatar's look couldn't be retrieved from the server");
+					this.callback.onError(ex);
 				e.printStackTrace();
 			}
 			try {
 				this.parseUsersTags(user);
 			} catch (JSONException e) {
+				WebServiceException ex = new WebServiceException(WebServiceException.JSON_USER_TAGS);
 				if(error<3)
-					this.callback.onError("An error happend. Your tags couldn't be parsed");
+					this.callback.onError(ex);
 				e.printStackTrace();
 			}
 				callback.onUserReceived(user);
@@ -247,13 +252,15 @@ public class GetUser extends WebServiceInteraction {
 								it.setLastCompleted(lastday);
 								items.add(it);
 							}  catch (JSONException e) {
-								this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+								WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+								this.callback.onError(ex);
 								e.printStackTrace();
 							}
 						}
 					}
 				}  catch (JSONException e) {
-					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+					this.callback.onError(ex);
 					e.printStackTrace();
 				}
 				try {
@@ -270,12 +277,14 @@ public class GetUser extends WebServiceInteraction {
 								items.add(it);
 							}
 						}  catch (JSONException e) {
-							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+							this.callback.onError(ex);
 							e.printStackTrace();
 						}
 					}
 				}  catch (JSONException e) {
-					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+					this.callback.onError(ex);
 					e.printStackTrace();
 				}
 				try {
@@ -292,12 +301,14 @@ public class GetUser extends WebServiceInteraction {
 								items.add(it);
 							}
 						} catch (JSONException e) {
-							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+							this.callback.onError(ex);
 							e.printStackTrace();
 						}
 					}
 				} catch (JSONException e) {
-					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+					this.callback.onError(ex);
 					e.printStackTrace();
 				}
 				try {
@@ -312,12 +323,14 @@ public class GetUser extends WebServiceInteraction {
 								items.add(it);
 							}
 						} catch (JSONException e) {
-							this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+							WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+							this.callback.onError(ex);
 							e.printStackTrace();
 						}
 					}
 				}  catch (JSONException e) {
-					this.callback.onError("An error happend. It might be due to a server maintenance, but please check your settings");
+					WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
+					this.callback.onError(ex);
 					e.printStackTrace();
 				}
 				user.setItems(items);
@@ -332,8 +345,8 @@ public class GetUser extends WebServiceInteraction {
 		 * @throws JSONException
 		 */
 		private List<String> parseTaskTags(JSONObject tagsJSON) throws JSONException {
-				@SuppressWarnings("unchecked")
 				List<String> tagsIds = new ArrayList<String>();
+				@SuppressWarnings("unchecked")
 				Iterator<String> it = tagsJSON.keys();
 				while(it.hasNext()) {
 					String tag = it.next();
