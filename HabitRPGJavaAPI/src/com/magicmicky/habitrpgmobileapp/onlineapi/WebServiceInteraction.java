@@ -51,7 +51,6 @@ public abstract class WebServiceInteraction {
 		Answer result=null;
 	        // Making HTTP request
 	        try {
-	            // defaultHttpClient
 	            HttpClient client = new DefaultHttpClient();
 	            HttpRequestBase request = this.getRequest();
 	            String address = config.getAddress();

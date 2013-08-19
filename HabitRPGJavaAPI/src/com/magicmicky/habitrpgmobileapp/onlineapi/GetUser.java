@@ -34,7 +34,14 @@ public class GetUser extends WebServiceInteraction {
 
 	@Override
 	protected Answer findAnswer(JSONObject answer) {
-		return new UserData(answer, this.getCallback());
+		Answer omg=null;
+		try {
+			omg = new UserData(answer, this.getCallback());
+
+		} catch(JSONException e) {
+			System.out.println("error GetUser: new UserData has thrown a JSONException (no tag habitRPGData");
+		}
+		return omg;
 	}
 
 	@Override
@@ -50,6 +57,7 @@ public class GetUser extends WebServiceInteraction {
 	 *
 	 */
 	private class UserData extends Answer {
+		private static final String TAG_habitData = "habitRPGData";
 		private static final String TAG_DAILIESID = "dailyIds";
 		private static final String TAG_HABITSID = "habitIds";
 		private static final String TAG_TODOIDS = "todoIds";
@@ -103,9 +111,10 @@ public class GetUser extends WebServiceInteraction {
 		 * Create a new UserData based on a JSONObject to parse, and a callback to call
 		 * @param obj the json that contains the user's values
 		 * @param callback the callback to call when the information is parsed
+		 * @throws JSONException 
 		 */
-		public UserData(JSONObject obj, OnHabitsAPIResult callback) {
-			super(obj, callback);
+		public UserData(JSONObject obj, OnHabitsAPIResult callback) throws JSONException {
+			super(obj.has(TAG_habitData) ?obj.getJSONObject(TAG_habitData):obj, callback);
 		}
 
 
@@ -195,7 +204,7 @@ public class GetUser extends WebServiceInteraction {
 					tags.put(tag_obj.getString(TAG_TAGS_ID), tag_obj.getString(TAG_TAGS_NAME));
 				}
 			} else {
-				callback.onError("Error: No tags were found for your profile");
+			
 			}
 			user.setTags(tags);
 
@@ -225,7 +234,8 @@ public class GetUser extends WebServiceInteraction {
 								if(habit.has(TAG_TASK_REPEAT)) {
 									JSONObject repeatTag = habit.getJSONObject(TAG_TASK_REPEAT);
 									for(int j=0;j<7;j++) {
-										repeats[j] = repeatTag.getBoolean(whatDay(j));
+										if(repeatTag.has(whatDay(j)))
+											repeats[j] = repeatTag.getBoolean(whatDay(j));
 									}
 								}
 								
@@ -354,11 +364,17 @@ public class GetUser extends WebServiceInteraction {
 				it.setText(habit.getString(TAG_TASK_TEXT));
 			if(habit.has(TAG_TASK_VALUE))
 				it.setValue(habit.getDouble(TAG_TASK_VALUE));
-			if(habit.has(TAG_TASK_TAGS)) {
-				JSONObject tagsJSON = habit.getJSONObject(TAG_TASK_TAGS);
-				List<String> tags = this.parseTaskTags(tagsJSON);
-				it.setTagsId(tags);
+			if(habit.has(TAG_TASK_TAGS) &&  !habit.isNull(TAG_TASK_TAGS)) {
+				try {
+					JSONObject tagsJSON = habit.getJSONObject(TAG_TASK_TAGS);
+					List<String> tags = this.parseTaskTags(tagsJSON);
+					it.setTagsId(tags);
+
+				} catch(JSONException error) {
+					error.printStackTrace(); 
+				}
 			}
+			
 			return it;
 		}
 		/**

@@ -3,6 +3,8 @@ package com.magicmicky.habitrpgmobileapp.habits;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 /**
  * Custom Item that regroup all the others.
  * @author MagicMicky
@@ -139,19 +141,23 @@ public abstract class HabitItem {
 	 * @return
 	 */
 	protected String getJSONBaseString() {
-		StringBuilder json = new StringBuilder()
+		StringBuilder json = new StringBuilder();
+		if(this.getId()!=null)
+			json.append("\"id\":").append(JSONObject.quote(this.getId())).append(",");
+		json
 			.append("\"type\":\"").append(this.getType()).append("\"," )
-			.append("\"text\":\"").append(this.getText()).append("\"," );
+			.append("\"text\":").append(JSONObject.quote(this.getText())).append("," );
 			if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
-				json.append("\"notes\":\"").append(this.getNotes()).append("\"," );
+				json.append("\"notes\":").append(JSONObject.quote(this.getNotes())).append("," );
 			json.append("\"value\":").append(this.getValue()).append(",");
-			if(this.getTagsId()!=null) {
+			if(this.getTagsId()!=null && this.getTagsId().size()!=0) {
 				json.append("\"tags\":{");
 				for(String tagId : this.getTagsId()) {
-					json.append("\"").append(tagId).append("\":").append("true");
+					json.append("").append(JSONObject.quote(tagId)).append(":").append("true").append(",");
 				}
+				json.deleteCharAt(json.length()-1);
 				json.append("},");
 			}
-		return json.toString();
+		return 	json.toString();
 	}
 }

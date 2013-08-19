@@ -25,8 +25,12 @@ import com.magicmicky.habitrpgmobileapp.habits.ToDo;
  */
 public class PostTask extends WebServiceInteraction {
 	private static final String CMD = "user/task/";
-	private HabitItem habit;
+	protected HabitItem habit;
 	public PostTask(OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {
+		super(CMD, callback, config);
+		this.habit=habit;
+	}
+	protected PostTask(String CMD, OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {
 		super(CMD, callback, config);
 		this.habit=habit;
 	}
@@ -49,6 +53,7 @@ public class PostTask extends WebServiceInteraction {
 	protected Answer findAnswer(JSONObject answer) {
 		return new PostTaskData(answer, this.getCallback());
 	}
+	
 
 	/**
 	 * The result of the POST task request, which has to be parsed
@@ -128,18 +133,20 @@ public class PostTask extends WebServiceInteraction {
 		private void parseTags(HabitItem item) {
 			List<String> tags= new ArrayList<String>();
 			JSONObject tagsObj;
-			try {
-				tagsObj = this.getObject().getJSONObject(TAG_TASK_TAGS);
-				Iterator<String> it = tagsObj.keys();
-				while(it.hasNext()) {
-					String tagId = it.next();
-					if(tagsObj.getBoolean(tagId)) {
-						tags.add(tagId);
+			if(this.getObject().has(TAG_TASK_TAGS)) {
+				try {
+					tagsObj = this.getObject().getJSONObject(TAG_TASK_TAGS);
+					Iterator<String> it = tagsObj.keys();
+					while(it.hasNext()) {
+						String tagId = it.next();
+						if(tagsObj.getBoolean(tagId)) {
+							tags.add(tagId);
+						}
 					}
+					item.setTagsId(tags);
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
-				item.setTagsId(tags);
-			} catch (JSONException e) {
-				e.printStackTrace();
 			}
 		}
 			
