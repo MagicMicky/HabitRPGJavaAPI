@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,8 +69,15 @@ public class PostTask extends WebServiceInteraction {
 		private static final String TAG_TASK_VALUE = "value";
 		private static final String TAG_TASK_COMPLETED = "completed";
 		private static final String TAG_TASK_UP = "up";
+		private static final String TAG_TASK_REPEAT = "repeat";
+		private static final String TAG_TASK_STREAK = "streak";
+		private static final String TAG_TASK_PRIORITY = "priority";
 		private static final String TAG_TASK_DOWN = "down";
 		private static final String TAG_TASK_TAGS = "tags";
+		private static final String TAG_TASK_DATE = "date";
+		private static final String TAG_TASK_HISTORY="history";
+			private static final String TAG_TASK_HISTORY_DATE = "date";
+
 		public PostTaskData(JSONObject obj, OnHabitsAPIResult callback) {
 			super(obj, callback);
 			this.setObject(obj);
@@ -112,14 +120,30 @@ public class PostTask extends WebServiceInteraction {
 				type = obj.getString(TAG_TASK_TYPE);
 
 				if(type.equals(HabitType.daily.toString())) {
-					boolean[] days = {false,false,false,false,false,false,false};
-					item = new Daily(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "",  obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ? obj.getBoolean(TAG_TASK_COMPLETED) : false,days);
+					long lastday=0;
+					if(obj.has(TAG_TASK_HISTORY)) {
+						JSONArray history = obj.getJSONArray(TAG_TASK_HISTORY);
+						lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+					} 
+					boolean[] repeats = {false,false,false,false,false,false,false};
+					if(obj.has(TAG_TASK_REPEAT)) {
+						JSONObject repeatTag = obj.getJSONObject(TAG_TASK_REPEAT);
+						for(int j=0;j<7;j++) {
+							if(repeatTag.has(whatDay(j)))
+								repeats[j] = repeatTag.getBoolean(whatDay(j));
+						}
+					}
+					if(obj.has(TAG_TASK_HISTORY)) {
+						JSONArray history = obj.getJSONArray(TAG_TASK_HISTORY);
+						lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+					}
+					item = new Daily(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", obj.has(TAG_TASK_PRIORITY) ? obj.getString(TAG_TASK_PRIORITY) : "",  obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ? obj.getBoolean(TAG_TASK_COMPLETED) : false,repeats, obj.has(TAG_TASK_STREAK) ? obj.getInt(TAG_TASK_STREAK) : 0,lastday);
 				} else if(type.equals(HabitType.todo.toString())) {
-					item = new ToDo(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ?  obj.getBoolean(TAG_TASK_COMPLETED) : false, null);
+					item = new ToDo(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", obj.has(TAG_TASK_PRIORITY) ? obj.getString(TAG_TASK_PRIORITY) : "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0, obj.has(TAG_TASK_COMPLETED) ?  obj.getBoolean(TAG_TASK_COMPLETED) : false, obj.has(TAG_TASK_DATE)?obj.getString(TAG_TASK_DATE):null);
 				} else if(type.equals(HabitType.reward.toString())) {
-					item = new Reward(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0);
+					item = new Reward(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", obj.has(TAG_TASK_PRIORITY) ? obj.getString(TAG_TASK_PRIORITY) : "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0);
 				} else {
-					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0,obj.has(TAG_TASK_UP)? obj.getBoolean(TAG_TASK_UP) : false, obj.has(TAG_TASK_DOWN) ? obj.getBoolean(TAG_TASK_DOWN) : false);
+					item = new Habit(obj.getString(TAG_TASK_ID), obj.has(TAG_TASK_NOTES) ? obj.getString(TAG_TASK_NOTES) : "", obj.has(TAG_TASK_PRIORITY) ? obj.getString(TAG_TASK_PRIORITY) : "", obj.getString(TAG_TASK_TEXT), obj.has(TAG_TASK_VALUE) ? obj.getDouble(TAG_TASK_VALUE) : 0,obj.has(TAG_TASK_UP)? obj.getBoolean(TAG_TASK_UP) : false, obj.has(TAG_TASK_DOWN) ? obj.getBoolean(TAG_TASK_DOWN) : false);
 				}
 			} catch (JSONException e) {
 				WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
@@ -153,7 +177,28 @@ public class PostTask extends WebServiceInteraction {
 				}
 			}
 		}
-			
+		/**
+		 * returns the day string depending on the number
+		 * @param j the number
+		 * @return the first/two first letter of the day
+		 */
+		private String whatDay(int j) {
+			if(j==0)
+				return "m";
+			else if(j==1)
+				return "t";
+			else if(j==2)
+				return "w";
+			else if(j==3)
+				return "th";
+			else if(j==4)
+				return "f";
+			else if(j==5)
+				return "s";
+			else if(j==6)
+				return "su";
+			return "su";
+		}
 		
 	}
 
