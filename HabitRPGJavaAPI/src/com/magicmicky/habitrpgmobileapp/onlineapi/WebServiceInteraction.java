@@ -282,6 +282,7 @@ public abstract class WebServiceInteraction {
 
 		private String errorDetails;
 		public WebServiceException(int error) {
+			super();
 			this.currentError=error;
 		}
 		public WebServiceException(int error, String details) {
@@ -291,61 +292,63 @@ public abstract class WebServiceInteraction {
 		public int getErrorNumber() {
 			return currentError;
 		}
-		public String getError() {
-			String error="";
+		@Override
+		public String getMessage() {
+			String errorMessage="";
 			switch(currentError) {
 				case HABITRPG_SERVER_API_CALL_NOT_FOUND:
 				case INTERNAL_WRONG_URL:
-					error="The server wasn't found. Please check your hosts settings.";
+					errorMessage="The server wasn't found. Please check your hosts settings.";
 					break;
 				case HABITRPG_INTERNAL_ERROR:
-					error="HabitRPG returned an error";
+					errorMessage="HabitRPG returned an error";
 					break;
 				case AUTH_PB:
-					error="There's a problem with the authentication settings. Please check your api and user key.";
+					errorMessage="There's a problem with the authentication settings. Please check your api and user key.";
 					break;
 				case SERV_EXPERIENCING_ISSUES:
-					error="HabitRPG's server is having some trouble. Feel free to switch to the beta server";
+					errorMessage="HabitRPG's server is having some trouble. Feel free to switch to the beta server";
 					break;
 				case PARSING_ERROR:
-					error="Part of the answer couldn't be parsed";
+					errorMessage="Part of the answer couldn't be parsed";
 					break;
 				case INTERNAL_NO_CONNECTION:
-					error="Error. Please check your connection";
+					errorMessage="Error. Please check your connection";
 					break;
 				case JSON_USER_TASKS:
-					error="Your tasks weren't found!";
+					errorMessage="Your tasks weren't found!";
 					break;
 				case JSON_USER_AVATAR_ERR:
-					error="Your avatar information couldn't be found!";
+					errorMessage="Your avatar information couldn't be found!";
 					break;
 				case JSON_USER_PERS_INFO:
-					error="Your personnal information couldn't be found!";
+					errorMessage="Your personnal information couldn't be found!";
 					break;
 				case JSON_USER_TAGS:
-					error="Your tags couldn't be found!";
+					errorMessage="Your tags couldn't be found!";
 					break;
 				case JSON_TASKS_UNPARSABLE:
-					error="Some of your tasks can't be found by this client!";
+					errorMessage="Some of your tasks can't be found by this client!";
 					break;
 
 				case JSON_TASK_DIRECTION:
-					error="Error while updating a task status!";
+					errorMessage="Error while updating a task status!";
 					break;
 
 				case TASK_DELETE_FAIL:
-					error="Error deleting a task!";
+					errorMessage="Error deleting a task!";
 					break;
 				case INTERNAL_OTHER:
-					error="An internal unknown  error happend!";
+					errorMessage="An internal unknown  error happend!";
 					break;
 				default:
-					error="An unknown error happened!";
+					errorMessage="An unknown error happened!";
 					break;
 				
 			}
-			return error;
+			return errorMessage;
 		}
+		
 		public String getDetails() {
 			return errorDetails;
 		}

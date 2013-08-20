@@ -34,11 +34,20 @@ public interface OnHabitsAPIResult {
 	 */
 	void onError(WebServiceInteraction.WebServiceException error);
 	/**
-	 * This is called when a new Task is added
+	 * This is called when a new Task is added/updated
 	 * @param task
 	 */
 	void onPostTaskAnswer(HabitItem task);
 
+	/**
+	 * This is called when a task have been deleted
+	 * @param deletedTask the deleted task
+	 */
+	void onDeletedTask(HabitItem deletedTask);
 	
-	void onDeletedTask(boolean deleted);
+	/**
+	 * Answer gotten agter a task have been edited
+	 * @param item
+	 */
+	public void onEditTaskAnswer(HabitItem item);
 }

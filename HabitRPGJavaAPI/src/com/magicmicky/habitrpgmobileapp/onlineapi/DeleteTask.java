@@ -9,9 +9,12 @@ import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
 
 public class DeleteTask extends WebServiceInteraction {
 	private final static String CMD = "user/task/";
+	private final HabitItem habit;
+	
 	public DeleteTask(OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {
 		super(CMD + habit.getId(), callback, config);
 		System.out.println("DELETING " +CMD + habit.getId());
+		this.habit=habit;
 	}
 	@Override
 	protected HttpRequestBase getRequest() {
@@ -41,7 +44,7 @@ public class DeleteTask extends WebServiceInteraction {
 		 */
 		public void parse() {
 			if(this.getObject().has(TAG_TASK_DELETED)) {
-	 			callback.onDeletedTask(true);
+	 			callback.onDeletedTask(habit);
 			} else {
 	 			callback.onError(new WebServiceException(WebServiceException.TASK_DELETE_FAIL));
 

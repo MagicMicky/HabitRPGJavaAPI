@@ -59,8 +59,8 @@ public class PostTask extends WebServiceInteraction {
 	 * @author Mickael
 	 *
 	 */
-	private class PostTaskData extends Answer {
-		private static final String TAG_ERR ="err";
+	protected class PostTaskData extends Answer {
+		protected static final String TAG_ERR ="err";
 		private static final String TAG_TASK_TYPE = "type";
 		private static final String TAG_TASK_ID = "id";
 		private static final String TAG_TASK_NOTES = "notes";
@@ -104,7 +104,7 @@ public class PostTask extends WebServiceInteraction {
 		 * Parse a task
 		 * @return
 		 */
-		private HabitItem parseTask() {
+		protected HabitItem parseTask() {
 			JSONObject obj = this.getObject();
 			String type;
 			HabitItem item = null;
@@ -133,7 +133,7 @@ public class PostTask extends WebServiceInteraction {
 		 * Parse the tags for an HabitItem
 		 * @param item the habitItem where we need to put the tags
 		 */
-		private void parseTags(HabitItem item) {
+		protected void parseTags(HabitItem item) {
 			List<String> tags= new ArrayList<String>();
 			JSONObject tagsObj;
 			if(this.getObject().has(TAG_TASK_TAGS)) {

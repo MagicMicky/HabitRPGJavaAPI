@@ -144,6 +144,28 @@ public class User {
 		this.items.add(task);
 	}
 	/**
+	 * 
+	 */
+	public void deleteTask(HabitItem task) {
+		if(this.items.contains(task)) {
+			this.items.remove(task);
+			System.out.println("NO need for search");
+		} else {
+			boolean flag=false;
+			int i=0;
+			while(i<this.items.size() && flag!=true) {
+				if(this.items.get(i).getId().equals(task.getId())) {
+					flag=true;
+				}
+				i++;
+			}
+			if(flag) {
+				this.items.remove(i);
+			}
+			
+		}
+	}
+	/**
 	 * @return the dayStart
 	 */
 	public int getDayStart() {
