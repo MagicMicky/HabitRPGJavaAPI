@@ -40,7 +40,7 @@ public class PutTask extends PostTask {
 
 	@Override
 	protected Answer findAnswer(JSONObject answer) {
-		return super.findAnswer(answer);
+		return new PutTaskData(answer, this.getCallback());
 	}
 
 	private class PutTaskData extends PostTaskData {
