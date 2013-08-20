@@ -33,6 +33,11 @@ public class Daily extends HabitItem{
 		this(id, notes, priority, text, value,completed,repeat);
 		this.setLastCompleted(lastCompleted);
 	}
+	public Daily(String id, String notes, String priority, String text,
+			double value, boolean completed, boolean[] repeat, int streak, long lastCompleted) {
+		this(id, notes, priority, text, value,completed,repeat,lastCompleted);
+		this.setStreak(streak);
+	}
 	public Daily() {
 		super();
 		this.setCompleted(false);
