@@ -143,6 +143,22 @@ public class User {
 	public void addTask(HabitItem task) {
 		this.items.add(task);
 	}
+	
+	
+	public void editTask(HabitItem task) {
+		boolean flag=false;
+		int i=0;
+		while(i<this.items.size() && flag!=true) {
+			if(this.items.get(i).getId().equals(task.getId())) {
+				flag=true;
+			} else {
+				i++;
+			}
+		}
+		if(flag) {
+			this.items.set(i, task);
+		}
+	}
 	/**
 	 * 
 	 */
@@ -156,8 +172,9 @@ public class User {
 			while(i<this.items.size() && flag!=true) {
 				if(this.items.get(i).getId().equals(task.getId())) {
 					flag=true;
+				} else {
+					i++;
 				}
-				i++;
 			}
 			if(flag) {
 				this.items.remove(i);
