@@ -59,4 +59,11 @@ public interface OnHabitsAPIResult {
 	 * @param item
 	 */
 	public void onEditTaskAnswer(HabitItem item);
+
+	/**
+	 * Used when an user connects to HabitRPG
+	 * @param api_t the API token
+	 * @param user_t the user token
+	 */
+	public void onUserConnected(String api_t, String user_t);
 }

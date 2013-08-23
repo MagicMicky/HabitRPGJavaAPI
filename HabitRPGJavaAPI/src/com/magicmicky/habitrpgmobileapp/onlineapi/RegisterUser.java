@@ -41,7 +41,6 @@ public class RegisterUser extends WebServiceInteraction {
 				.append("\"").append(TAG_USER_PASSWORD).append("\":").append(JSONObject.quote(mUserPassword)).append(",")
 				.append("\"").append(TAG_USER_CONFIRM_PASSWORD).append("\":").append(JSONObject.quote(mUserConfirmPassword))
 			.append("}");
-			System.out.println("Test: " + sb.toString());
 			StringEntity ent = new StringEntity(sb.toString());
 			ent.setContentType("application/json");
 			method.setEntity(ent);
