@@ -13,25 +13,34 @@ import com.magicmicky.habitrpgmobileapp.onlineapi.WebServiceInteraction.WebServi
 
 public class AuthUser extends WebServiceInteraction {
 	private final static String CMD="user/auth/local";
-	private static final Object TAG_USER_NAME = "username";
-	private static final Object TAG_USER_PASSWORD = "password";
+	private final static String CMD_FB="user/auth/facebook";
+	private static final String TAG_USER_NAME = "username";
+	private static final String TAG_USER_PASSWORD = "password";
+	private static final String TAG_FACEBOOK_ID="facebook_id";
 	private String mUserName;
 	private String mUserPassword;
+	private String mUserFacebookId;
 	public AuthUser(OnHabitsAPIResult callback,HostConfig config, String name, String password) {
 		super(CMD, callback, config);
 		this.mUserName= name;
 		this.mUserPassword=password;
-		// TODO Auto-generated constructor stub
 	}
-
+	public AuthUser(OnHabitsAPIResult callback,HostConfig config, String facebook_id) {
+		super(CMD_FB, callback, config);
+		this.mUserFacebookId= facebook_id;
+	}
 	protected HttpRequestBase getRequest() {
 		HttpPost method =  new HttpPost();
 		try {
 			StringBuilder sb = new StringBuilder()
-			.append("{")
-				.append("\"").append(TAG_USER_NAME).append("\":").append(JSONObject.quote(mUserName)).append(",")
-				.append("\"").append(TAG_USER_PASSWORD).append("\":").append(JSONObject.quote(mUserPassword))
-			.append("}");
+			.append("{");
+			if(mUserFacebookId==null) {
+				sb.append("\"").append(TAG_USER_NAME).append("\":").append(JSONObject.quote(mUserName)).append(",")
+				.append("\"").append(TAG_USER_PASSWORD).append("\":").append(JSONObject.quote(mUserPassword));
+			} else {
+				sb.append("\"").append(TAG_FACEBOOK_ID).append("\":").append(JSONObject.quote(mUserFacebookId));
+			}
+			sb.append("}");
 			StringEntity ent = new StringEntity(sb.toString());
 			ent.setContentType("application/json");
 			method.setEntity(ent);
