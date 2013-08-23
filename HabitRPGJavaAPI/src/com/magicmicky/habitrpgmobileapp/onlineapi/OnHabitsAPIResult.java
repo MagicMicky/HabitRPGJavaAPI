@@ -9,6 +9,15 @@ import com.magicmicky.habitrpgmobileapp.habits.User;
  *
  */
 public interface OnHabitsAPIResult {
+	
+	/**
+	 * This is the function called when a new user is created
+	 * @param user the new user
+	 * @param ApiToken the user's API token
+	 * @param ApiUser the user's API User token
+	 */
+	public void onNewUser(String ApiToken, String ApiUser);
+	
 	/**
 	 * This is the function called once a user have been updated
 	 * @param user

@@ -34,9 +34,12 @@ public class Reward extends HabitItem{
 	public String getJSONString() {
 			StringBuilder json = new StringBuilder()
 			.append("{")
-				.append(super.getJSONBaseString())
-			.append("}");
-			
+				.append(super.getJSONBaseString());
+			if(json.charAt(json.length()-1) ==',') {
+				json.deleteCharAt(json.length()-1);
+			}
+			json.append("}");
+			System.out.println(json.toString());
 			return json.toString();
 	}
 

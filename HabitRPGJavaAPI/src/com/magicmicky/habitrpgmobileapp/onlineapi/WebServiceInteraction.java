@@ -78,7 +78,7 @@ public abstract class WebServiceInteraction {
 	            		//throw new WebServiceException("The server is experiencing issues. Please either wait or change server.");
 	            	} else if(response.getStatusLine().getStatusCode() == 401) {
 	            		//TODO:Should continue reading stuff and check if body errors = No user found.
-	            		throw new WebServiceException(WebServiceException.AUTH_PB);
+	            		//throw new WebServiceException(WebServiceException.AUTH_PB);
 	            	} else {
 	            		System.out.println(response.getStatusLine().getStatusCode() + "-" + response.getStatusLine().getReasonPhrase());
 	            	}//throw new Exception("The server didn't answer 200");
@@ -120,7 +120,7 @@ public abstract class WebServiceInteraction {
 	            e.printStackTrace();
 
 	        }*/ catch(WebServiceException e) {//TODO:Custom exception?!?!
-				this.callback.onError(new WebServiceException(WebServiceException.INTERNAL_OTHER,e.getMessage()));
+				this.callback.onError(e);
 				e.printStackTrace(); 
 			} catch (JSONException e) {
 				if(request!=null) {
@@ -242,6 +242,7 @@ public abstract class WebServiceInteraction {
 		 */
 		public final static int INTERNAL_OTHER = 5;
 		public static final int INTERNAL_WRONG_URL = 6;
+		public static final int HABITRPG_REGISTRATION_ERROR = 7;
 
 		/*
 		 * JSON errors:
@@ -277,6 +278,7 @@ public abstract class WebServiceInteraction {
 		 * Happen when a task couldn't be deleted;
 		 */
 		public static final int TASK_DELETE_FAIL = 220;
+
 
 		private int currentError;
 
@@ -341,6 +343,8 @@ public abstract class WebServiceInteraction {
 				case INTERNAL_OTHER:
 					errorMessage="An internal unknown  error happend!";
 					break;
+				case HABITRPG_REGISTRATION_ERROR:
+					errorMessage="There has been an error during the registration process! Please try again.";
 				default:
 					errorMessage="An unknown error happened!";
 					break;
