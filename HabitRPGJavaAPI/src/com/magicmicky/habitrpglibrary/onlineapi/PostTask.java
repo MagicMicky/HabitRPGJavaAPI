@@ -18,8 +18,8 @@ import com.magicmicky.habitrpglibrary.habits.HabitItem;
 import com.magicmicky.habitrpglibrary.habits.HabitType;
 import com.magicmicky.habitrpglibrary.habits.Reward;
 import com.magicmicky.habitrpglibrary.habits.ToDo;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 /**
  * Allows creation of a new task using POST /api/v1/user/task
  * @author Mickael

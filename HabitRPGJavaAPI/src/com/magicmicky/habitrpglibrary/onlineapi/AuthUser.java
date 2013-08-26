@@ -9,8 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.magicmicky.habitrpglibrary.onlineapi.WebServiceInteraction.Answer;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 
 public class AuthUser extends WebServiceInteraction {
 	private final static String CMD="user/auth/local";

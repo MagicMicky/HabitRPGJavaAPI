@@ -19,7 +19,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.HabitRPGException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.HabitRPGException;
 /**
  * The main class that do the interaction with the webservice.
  * @author Mickael

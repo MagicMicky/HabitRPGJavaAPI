@@ -2,8 +2,8 @@ package com.magicmicky.habitrpglibrary.onlineapi;
 
 import com.magicmicky.habitrpglibrary.habits.HabitItem;
 import com.magicmicky.habitrpglibrary.habits.User;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.HabitRPGException;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.HabitRPGException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
 /**
  * This is the callback interface. The functions here are called by the different POST, PUT, GET, and DELETE
  * methods, and notifies the application of changes

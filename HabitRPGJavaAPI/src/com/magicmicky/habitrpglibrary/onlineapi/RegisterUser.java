@@ -8,8 +8,8 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
-import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 
 public class RegisterUser extends WebServiceInteraction {
 	private final static String CMD = "register";

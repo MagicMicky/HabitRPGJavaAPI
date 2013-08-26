@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgllibrary.onlineapi.helper;
+package com.magicmicky.habitrpglibrary.onlineapi.helper;
 
 public class HabitRPGException extends Exception {
 	/**
