@@ -1,7 +1,9 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
-import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
-import com.magicmicky.habitrpgmobileapp.habits.User;
+import com.magicmicky.habitrpglibrary.habits.HabitItem;
+import com.magicmicky.habitrpglibrary.habits.User;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.HabitRPGException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
 /**
  * This is the callback interface. The functions here are called by the different POST, PUT, GET, and DELETE
  * methods, and notifies the application of changes
@@ -41,7 +43,9 @@ public interface OnHabitsAPIResult {
 	 * This is called when there has been an error from the API
 	 * @param message an optional error message
 	 */
-	void onError(WebServiceInteraction.WebServiceException error);
+	//void onError(WebServiceInteraction.WebServiceException error);
+	void onError(HabitRPGException error);
+
 	/**
 	 * This is called when a new Task is added/updated
 	 * @param task

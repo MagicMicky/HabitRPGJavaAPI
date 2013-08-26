@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 /**
  * The configuration of the host<br />
  * Currently, the Port isn't used at all.

@@ -1,11 +1,13 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
 
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONObject;
 
-import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
+import com.magicmicky.habitrpglibrary.habits.HabitItem;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
 
 public class DeleteTask extends WebServiceInteraction {
 	private final static String CMD = "user/task/";
@@ -30,7 +32,6 @@ public class DeleteTask extends WebServiceInteraction {
 	
 	
 	public class DeleteData extends Answer {
-		private static final String TAG_TASK_DELETED = "task_deleted";
 		/**
 		 * Create a new Answer based on the object to parse, and the callback to call after.
 		 * @param obj the object to parse
@@ -43,13 +44,15 @@ public class DeleteTask extends WebServiceInteraction {
 		 * Parse the {@code object}
 		 */
 		public void parse() {
-			if(this.getObject().has(TAG_TASK_DELETED)) {
-	 			callback.onDeletedTask(habit);
-			} else {
-	 			callback.onError(new WebServiceException(WebServiceException.TASK_DELETE_FAIL));
-
+			boolean deleted=false;
+			try {
+				deleted = ParserHelper.parseDeletedTask(getObject());
+				if(deleted)
+		 			callback.onDeletedTask(habit);
+			} catch (ParseErrorException e) {
+				callback.onError(e);
+				e.printStackTrace();
 			}
-
 		}
 	}
 

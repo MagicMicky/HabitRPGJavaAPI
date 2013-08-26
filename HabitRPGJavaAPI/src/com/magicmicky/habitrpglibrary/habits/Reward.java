@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgmobileapp.habits;
+package com.magicmicky.habitrpglibrary.habits;
 
 
 /**

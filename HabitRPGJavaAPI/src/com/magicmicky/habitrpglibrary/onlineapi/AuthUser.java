@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
 import java.io.UnsupportedEncodingException;
 
@@ -8,8 +8,9 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.magicmicky.habitrpgmobileapp.onlineapi.WebServiceInteraction.Answer;
-import com.magicmicky.habitrpgmobileapp.onlineapi.WebServiceInteraction.WebServiceException;
+import com.magicmicky.habitrpglibrary.onlineapi.WebServiceInteraction.Answer;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
 
 public class AuthUser extends WebServiceInteraction {
 	private final static String CMD="user/auth/local";
@@ -57,9 +58,6 @@ public class AuthUser extends WebServiceInteraction {
 	}
 
 	public class AuthUserData extends Answer {
-		private final static String TAG_API_TOKEN="token";
-		private final static String TAG_API_USER_TOKEN="id";
-		private final static String TAG_ERR="err";
 		
 		public AuthUserData(JSONObject obj, OnHabitsAPIResult callback) {
 			super(obj,callback);
@@ -67,22 +65,12 @@ public class AuthUser extends WebServiceInteraction {
 		
 		public void parse() {
 			JSONObject obj = this.getObject();
-			String api_t;
-			String user_t;
 			try {
-				api_t = obj.getString(TAG_API_TOKEN);
-				user_t = obj.getString(TAG_API_USER_TOKEN);
-				callback.onUserConnected(api_t, user_t);
-			} catch (JSONException e) {
-				if(obj.has(TAG_ERR)) {
-					try {
-						callback.onError((new WebServiceException(WebServiceException.HABITRPG_REGISTRATION_ERROR, obj.getString(TAG_ERR))));
-					} catch (JSONException e1) {
-						e1.printStackTrace();
-					}
-				}
-				e.printStackTrace();
-				callback.onError((new WebServiceException(WebServiceException.HABITRPG_REGISTRATION_ERROR)));
+			
+				String[] tokens = ParserHelper.parseAuthenticationAnswer(obj);
+				callback.onUserConnected(tokens[0], tokens[1]);
+			} catch (ParseErrorException e) {
+						callback.onError(e);
 			}
 		}
 	}

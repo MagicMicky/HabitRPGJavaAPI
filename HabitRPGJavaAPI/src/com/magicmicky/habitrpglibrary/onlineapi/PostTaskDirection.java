@@ -1,10 +1,13 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
 
 
 /**
@@ -42,11 +45,6 @@ public class PostTaskDirection extends WebServiceInteraction {
 	 *
 	 */
 	private class PostTaskDirectionData extends Answer {
-		private static final String TAG_NOWXP = "exp";
-		private static final String TAG_NOWGP = "gp";
-		private static final String TAG_NOWHP = "hp";
-		private static final String TAG_LVL = "lvl";
-		private static final String TAG_DELTA = "delta";
 
 		/**
 		 * Creates a new result
@@ -59,29 +57,13 @@ public class PostTaskDirection extends WebServiceInteraction {
 
 		@Override
 		public void parse() {
-			double xp = 0,hp = 0,gold = 0,lvl = 0,delta = 0;
-			try {
-				 if(this.getObject().has(TAG_NOWXP))
-					 xp = this.getObject().getDouble(TAG_NOWXP);
-				 if(this.getObject().has(TAG_NOWHP))
-					 hp = this.getObject().getDouble(TAG_NOWHP);
-				 if(this.getObject().has(TAG_NOWGP))
-					 gold = this.getObject().getDouble(TAG_NOWGP);
-				 if(this.getObject().has(TAG_LVL))
-					 lvl = this.getObject().getDouble(TAG_LVL);
-				 if(this.getObject().has(TAG_DELTA))
-					 delta = this.getObject().getDouble(TAG_DELTA);
-				 if(callback != null)
-					 callback.onPostResult(xp, hp, gold, lvl, delta);
-
-			} catch (JSONException e) {
-				 if(callback != null) {
-					WebServiceException ex = new WebServiceException(WebServiceException.PARSING_ERROR);
-					this.callback.onError(ex);
-				
-				 }
-				 e.printStackTrace();
-			}
+				try {
+					double[] res = ParserHelper.parseDirectionAnswer(getObject());
+					 callback.onPostResult(res[0], res[1], res[2], res[3], res[4]);
+				} catch (ParseErrorException e) {
+					e.printStackTrace();
+					callback.onError(e);
+				}
 		}
 		
 	}

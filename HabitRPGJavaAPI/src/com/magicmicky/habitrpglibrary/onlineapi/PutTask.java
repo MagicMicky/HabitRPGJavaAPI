@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
 import java.io.UnsupportedEncodingException;
 
@@ -8,9 +8,10 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.magicmicky.habitrpgmobileapp.habits.HabitItem;
-import com.magicmicky.habitrpgmobileapp.onlineapi.WebServiceInteraction.Answer;
-import com.magicmicky.habitrpgmobileapp.onlineapi.WebServiceInteraction.WebServiceException;
+import com.magicmicky.habitrpglibrary.habits.HabitItem;
+import com.magicmicky.habitrpglibrary.onlineapi.WebServiceInteraction.Answer;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
 /**
  * Edit a new task.
  * @see PostTask#findAnswer(JSONObject)
@@ -43,34 +44,26 @@ public class PutTask extends PostTask {
 		return new PutTaskData(answer, this.getCallback());
 	}
 
-	private class PutTaskData extends PostTaskData {
+	private class PutTaskData extends Answer {
 
 		public PutTaskData(JSONObject obj, OnHabitsAPIResult callback) {
 			super(obj, callback);
 		}
 		public void parse() {
-			if(this.getObject().has(TAG_ERR)) {
-				
-				try {
-					WebServiceException ex = new WebServiceException(WebServiceException.HABITRPG_INTERNAL_ERROR,this.getObject().getString(TAG_ERR));
-					this.callback.onError(ex);
+			HabitItem it;
+			try {
+				it = ParserHelper.parseHabitItem(getObject());
+				if(this.callback != null)
+					this.callback.onEditTaskAnswer(it);
 
-				} catch (JSONException e) {
-					e.printStackTrace();
-					//Should never happen since we check that it has an error;
-				}
-				return;
+			} catch (ParseErrorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				if(this.callback != null)
+					this.callback.onError(e);
+
 			}
-			HabitItem item  = this.parseTask();
-			if(item == null) {
-				WebServiceException ex = new WebServiceException(WebServiceException.JSON_TASKS_UNPARSABLE);
-				this.callback.onError(ex);
-			}
-			this.parseTags(item);
-			if(this.callback != null)
-				this.callback.onEditTaskAnswer(item);
 		}
-
 		
 	}
 	

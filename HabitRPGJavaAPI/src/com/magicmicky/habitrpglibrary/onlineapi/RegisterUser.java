@@ -1,4 +1,4 @@
-package com.magicmicky.habitrpgmobileapp.onlineapi;
+package com.magicmicky.habitrpglibrary.onlineapi;
 
 import java.io.UnsupportedEncodingException;
 
@@ -7,6 +7,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParseErrorException;
+import com.magicmicky.habitrpgllibrary.onlineapi.helper.ParserHelper;
 
 public class RegisterUser extends WebServiceInteraction {
 	private final static String CMD = "register";
@@ -66,24 +69,18 @@ public class RegisterUser extends WebServiceInteraction {
 		}
 		
 		public void parse() {
-			JSONObject obj = this.getObject();
 			String api_t;
 			String user_t;
-				try {
-					api_t = obj.getString(TAG_API_TOKEN);
-					user_t = obj.getString(TAG_API_USER_TOKEN);
-					callback.onNewUser(api_t, user_t);
-				} catch (JSONException e) {
-					if(obj.has(TAG_ERR)) {
-						try {
-							callback.onError((new WebServiceException(WebServiceException.HABITRPG_REGISTRATION_ERROR, obj.getString(TAG_ERR))));
-						} catch (JSONException e1) {
-							e1.printStackTrace();
-						}
-					}
-					e.printStackTrace();
-					callback.onError((new WebServiceException(WebServiceException.HABITRPG_REGISTRATION_ERROR)));
-				}
+			String[] res;
+			try {
+				res = ParserHelper.parseRegistrationAnswer(this.getObject());
+				api_t = res[0];
+				user_t = res[1];
+			callback.onNewUser(api_t, user_t);
+			} catch (ParseErrorException e) {
+				e.printStackTrace();
+				callback.onError(e);
+			}
 		}
 	}
 }
