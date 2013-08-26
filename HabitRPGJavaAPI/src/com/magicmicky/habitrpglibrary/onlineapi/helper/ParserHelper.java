@@ -81,6 +81,14 @@ public class ParserHelper {
 	
 	public static User parseUser(JSONObject obj) throws ParseErrorException{
 		parseError(obj);
+		if(obj.has(TAG_habitData)) {
+			try {
+				obj = obj.getJSONObject(TAG_habitData);
+			} catch (JSONException e1) {
+				// Can't happen
+				e1.printStackTrace();
+			}
+		}
 		User user = new User();
 		/*
 		 * Parse tasks

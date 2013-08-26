@@ -62,7 +62,7 @@ public class GetUser extends WebServiceInteraction {
 		 * @throws JSONException 
 		 */
 		public UserData(JSONObject obj, OnHabitsAPIResult callback) throws JSONException {
-			super(obj.has(TAG_habitData) ?obj.getJSONObject(TAG_habitData):obj, callback);
+			super(obj, callback);
 		}
 
 
