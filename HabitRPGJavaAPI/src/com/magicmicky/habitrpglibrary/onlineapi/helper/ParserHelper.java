@@ -109,8 +109,9 @@ public class ParserHelper {
 		 */
 		try  {
 			user.setLook(parseUserLook(obj));
-		} catch (JSONException e) {
+		} catch (ParseErrorException e) {
 			e.printStackTrace();
+			//TODO:
 			//exceptions.add(new ParseErrorException(ParseErrorException.JSON_USER_LOOK_NOT_FOUND));
 
 		}
@@ -144,37 +145,52 @@ public class ParserHelper {
 		return tags;
 	}
 
-	private static UserLook parseUserLook(JSONObject obj) throws JSONException {
+	public static UserLook parseUserLook(JSONObject obj) throws ParseErrorException {
 		UserLook look = new UserLook();
 		if(obj.has(TAG_PREFS)) {
-			JSONObject prefs;
-			prefs = obj.getJSONObject(TAG_PREFS);
-
-			if(prefs.has(TAG_PREFS_GENDER))
-				look.setGender(prefs.getString(TAG_PREFS_GENDER));
-			if(prefs.has(TAG_PREFS_SKIN))
-				look.setSkin(prefs.getString(TAG_PREFS_SKIN));
-			if(prefs.has(TAG_PREFS_HAIR))
-				look.setHair(prefs.getString(TAG_PREFS_HAIR));
-			if(prefs.has(TAG_PREFS_ARMORSET))
-				look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
-			if(prefs.has(TAG_PREFS_SHOWHELM))
-				look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+			try {
+				JSONObject prefs;
+				prefs = obj.getJSONObject(TAG_PREFS);
+	
+				if(prefs.has(TAG_PREFS_GENDER))
+					look.setGender(prefs.getString(TAG_PREFS_GENDER));
+				if(prefs.has(TAG_PREFS_SKIN))
+					look.setSkin(prefs.getString(TAG_PREFS_SKIN));
+				if(prefs.has(TAG_PREFS_HAIR))
+					look.setHair(prefs.getString(TAG_PREFS_HAIR));
+				if(prefs.has(TAG_PREFS_ARMORSET))
+					look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
+				if(prefs.has(TAG_PREFS_SHOWHELM))
+					look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+			}catch(JSONException e) {
+				throw new ParseErrorException(ParseErrorException.JSON_USER_PREFS_ERROR);
+			}
 		}
-		if(obj.has(TAG_ITEMS)) {
-			JSONObject items = obj.getJSONObject(TAG_ITEMS);
-			if(items.has(TAG_ITEMS_ARMOR))
-				look.setArmor(items.getInt(TAG_ITEMS_ARMOR));
-			if(items.has(TAG_ITEMS_HEAD))
-				look.setHead(items.getInt(TAG_ITEMS_HEAD));
-			if(items.has(TAG_ITEMS_SHIELD))
-				look.setShield(items.getInt(TAG_ITEMS_SHIELD));
-			if(items.has(TAG_ITEMS_WEAPON))
-				look.setWeapon(items.getInt(TAG_ITEMS_WEAPON));
+		try {
+			look.setItems(parseUserItems(obj.getJSONObject(TAG_ITEMS)));
+		} catch(JSONException e) {
+			throw new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_ITEMS);
 		}
 		return look;
 	}
-
+	public static UserLook.UserItems parseUserItems(JSONObject obj) throws ParseErrorException  {
+		parseError(obj);
+		int armor=0, head=0, shield=0, weapon=0;
+		try {
+			if(obj.has(TAG_ITEMS_ARMOR))
+				armor = (obj.getInt(TAG_ITEMS_ARMOR));
+			if(obj.has(TAG_ITEMS_HEAD))
+				head = (obj.getInt(TAG_ITEMS_HEAD));
+			if(obj.has(TAG_ITEMS_SHIELD))
+				shield = (obj.getInt(TAG_ITEMS_SHIELD));
+			if(obj.has(TAG_ITEMS_WEAPON))
+				weapon = (obj.getInt(TAG_ITEMS_WEAPON));
+		} catch (JSONException e){
+			e.printStackTrace();
+			//Should never happen
+		}
+		return new UserLook.UserItems(armor, head, shield, weapon);
+	}
 	private static void parseUserInfos(JSONObject obj, User user) throws JSONException {
 		if(obj.has(TAG_STATS)) {
 			JSONObject stats = obj.getJSONObject(TAG_STATS);
@@ -236,6 +252,7 @@ public class ParserHelper {
 			JSONArray dailies = obj.getJSONArray(TAG_DAILIESID);
 			for(int i=0;i<dailies.length();i++) {
 				if(tasks.has(dailies.getString(i))) {
+
 					items.add(parseDaily(tasks.getJSONObject(dailies.getString(i))));
 					//TODO: it Throws exception when stuff not found, but we still want to continue if this happens.
 				}

@@ -2,6 +2,8 @@ package com.magicmicky.habitrpglibrary.onlineapi;
 
 import com.magicmicky.habitrpglibrary.habits.HabitItem;
 import com.magicmicky.habitrpglibrary.habits.User;
+import com.magicmicky.habitrpglibrary.habits.UserLook;
+import com.magicmicky.habitrpglibrary.habits.UserLook.UserItems;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.HabitRPGException;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
 /**
@@ -25,6 +27,8 @@ public interface OnHabitsAPIResult {
 	 * @param user
 	 */
 	public void onUserReceived(User user);
+	
+	public void onUserItemsReceived(UserItems userLook);
 	/**
 	 * This is the callback called when we have a result from an update Tasks
 	 * @param xp

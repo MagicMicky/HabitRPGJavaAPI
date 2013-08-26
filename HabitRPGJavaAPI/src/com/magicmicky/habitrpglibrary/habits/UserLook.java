@@ -10,14 +10,7 @@ public class UserLook {
 	private String skin;
 	private String armorSet;
 	private boolean showHelm;
-	
-	/*
-	 * items
-	 */
-	private int armor;
-	private int head;
-	private int shield;
-	private int weapon;
+	private UserItems items;
 	public UserLook(String gender, String hair, String skin, String armorSet, boolean showHelm
 			, int armor, int head, int shield, int weapon) {
 		this.gender=gender;
@@ -25,12 +18,10 @@ public class UserLook {
 		this.skin=skin;
 		this.armorSet=armorSet;
 		this.showHelm=showHelm;
-		this.armor=armor;
-		this.head=head;
-		this.shield=shield;
-		this.weapon=weapon;
+		setItems(new UserItems(armor,head,shield,weapon));
 	}
 	public UserLook () {
+		setItems(new UserItems());
 	}
 	/**
 	 * @return the gender of the user
@@ -97,6 +88,47 @@ public class UserLook {
 	public void setShowHelm(boolean showHelm) {
 		this.showHelm = showHelm;
 	}
+
+	@Override
+	/**
+	 * Return a string to show the UserLook easily.
+	 */
+	public String toString() {
+		return this.gender + ": armor" + this.getItems().getArmor() + " head" + this.getItems().getHead()
+				+ " hair" + this.hair + " skin" + this.getSkin()
+				+ " weapon" + this.getItems().getWeapon() + " shield" + this.getItems().getShield();
+		
+	}
+	/**
+	 * @return the items
+	 */
+	public UserItems getItems() {
+		return items;
+	}
+	/**
+	 * @param items the items to set
+	 */
+	public void setItems(UserItems items) {
+		this.items = items;
+	}
+	public static class UserItems {
+		/*
+		 * items
+		 */
+		private int armor;
+		private int head;
+		private int shield;
+		private int weapon;
+
+		public UserItems() {
+			
+		}
+		public UserItems(int armor,int head, int shield, int weapon) {
+			this.setArmor(armor);
+			this.setHead(head);
+			this.setShield(shield);
+			this.setWeapon(weapon);
+		}
 	/**
 	 * @return the armor
 	 */
@@ -150,15 +182,5 @@ public class UserLook {
 		this.weapon = weapon;
 	}
 	
-	@Override
-	/**
-	 * Return a string to show the UserLook easily.
-	 */
-	public String toString() {
-		return this.gender + ": armor" + this.armor + " head" + this.head
-				+ " hair" + this.hair + " skin" + this.getSkin()
-				+ " weapon" + this.weapon + " shield" + this.shield;
-		
-	}
-
+}
 }

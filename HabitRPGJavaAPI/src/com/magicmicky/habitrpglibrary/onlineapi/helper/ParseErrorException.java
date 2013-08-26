@@ -18,6 +18,9 @@ public class ParseErrorException extends HabitRPGException {
 	public static final int JSON_USER_HAS_NO_TODOS_TAGS = 122;
 	public static final int JSON_USER_HAS_NO_HABITS_TAGS = 123;
 	public static final int JSON_USER_HAS_NO_REWARDS_TAGS = 124;
+	public static final int JSON_USER_HAS_NO_ITEMS = 125;
+	public static final int JSON_USER_PREFS_ERROR = 130;
+
 	public static final int TASK_NOT_DELETED = 200;
 	
 	public ParseErrorException(int id, String message) {
