@@ -1,6 +1,7 @@
 package com.magicmicky.habitrpglibrary.onlineapi;
 
 import com.magicmicky.habitrpglibrary.habits.HabitItem;
+import com.magicmicky.habitrpglibrary.habits.Reward.SpecialReward;
 import com.magicmicky.habitrpglibrary.habits.User;
 import com.magicmicky.habitrpglibrary.habits.UserLook;
 import com.magicmicky.habitrpglibrary.habits.UserLook.UserItems;
@@ -28,7 +29,7 @@ public interface OnHabitsAPIResult {
 	 */
 	public void onUserReceived(User user);
 	
-	public void onUserItemsReceived(UserItems userLook);
+	public void onUserItemsReceived(UserItems userLook, SpecialReward itemBought);
 	/**
 	 * This is the callback called when we have a result from an update Tasks
 	 * @param xp

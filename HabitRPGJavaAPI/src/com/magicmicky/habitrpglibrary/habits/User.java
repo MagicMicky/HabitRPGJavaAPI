@@ -11,11 +11,12 @@ import java.util.Map;
 public class User {
 	private List<HabitItem> items;
 	private String name;
-	private double hp,maxHp,xp, maxXp,gp;
+	private double hp,maxHp=0,xp, maxXp=0,gp;
 	private int lvl;
 	private int dayStart;
 	private UserLook look;
 	private Map<String, String> tags;
+	private int timeZoneOffset;
 	/**
 	 * Create a new User
 	 */
@@ -29,10 +30,19 @@ public class User {
 	public User(List<HabitItem> items) {
 		this.setItems(items);
 	}
+
 	/**
-	 * @return the items
+	 * Get the tasks of an user, with or without the custom rewards
+	 * @param withCustomRewardsUpgrade whether or not you want the customrewards integrated to the HabitItem list
+	 * @return the list of all the tasks of this user
 	 */
-	public List<HabitItem> getItems() {
+	public List<HabitItem> getItems(boolean withCustomRewardsUpgrade) {
+		if(withCustomRewardsUpgrade) {
+			List<HabitItem> allItems = new ArrayList<HabitItem>(items);
+			if(getLook() != null && getLook().getItems() != null && getLook().getItems().toRewardsUpgrade()!=null)
+				allItems.addAll(getLook().getItems().toRewardsUpgrade());
+			return allItems;
+		}
 		return items;
 	}
 	/**
@@ -69,7 +79,9 @@ public class User {
 	 * @return the user's maxHp
 	 */
 	public double getMaxHp() {
-		return maxHp;
+		if(maxHp!=0)
+			return maxHp;
+		return 50;
 	}
 	/**
 	 * @param maxHp the maxHp to set
@@ -93,7 +105,10 @@ public class User {
 	 * @return the user's maxXp
 	 */
 	public double getMaxXp() {
-		return maxXp;
+		if(maxXp != 0) {
+			return maxXp;
+		}
+		return Math.round(((Math.pow(this.getLvl(), 2) * 0.25) + (10 * this.getLvl()) + 139.75) / 10)*10;
 	}
 	/**
 	 * @param maxXp the maxXp to set
@@ -205,5 +220,24 @@ public class User {
 	 */
 	public void setTags(Map<String, String> tags2) {
 		this.tags = tags2;
+	}
+	/**
+	 * @return the timeZoneOffset
+	 */
+	public int getTimeZoneOffset() {
+		return timeZoneOffset;
+	}
+	/**
+	 * @param timeZoneOffset the timeZoneOffset to set
+	 */
+	public void setTimeZoneOffset(int timeZoneOffset) {
+		this.timeZoneOffset = timeZoneOffset;
+	}
+	
+	/**
+	 * @return true if the user is dead, false otherwise
+	 */
+	public boolean isUserDead() {
+		return this.getHp()<=0;
 	}
 }

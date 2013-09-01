@@ -1,4 +1,10 @@
 package com.magicmicky.habitrpglibrary.habits;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.magicmicky.habitrpglibrary.habits.Reward.SpecialReward;
+
 /**
  * Class storing a user look.
  * @author MagicMicky
@@ -181,6 +187,25 @@ public class UserLook {
 	public void setWeapon(int weapon) {
 		this.weapon = weapon;
 	}
-	
+	public List<Reward> toRewards() {
+		List<Reward> specRewards = new ArrayList<Reward>();
+		specRewards.add(new SpecialReward(this.getWeapon(), "weapon"));
+		specRewards.add(new SpecialReward(this.getArmor(), "armor"));
+		specRewards.add(new SpecialReward(this.getHead(), "head"));
+		specRewards.add(new SpecialReward(this.getShield(), "shield"));
+		return specRewards;
+	}
+	public List<Reward> toRewardsUpgrade() {
+		List<Reward> specRewards = new ArrayList<Reward>();
+		if(this.getWeapon()<6)
+			specRewards.add(new SpecialReward(this.getWeapon() +1, "weapon"));
+		if(this.getArmor() < 5)
+			specRewards.add(new SpecialReward(this.getArmor() +1, "armor"));
+		if(this.getHead()< 5)
+			specRewards.add(new SpecialReward(this.getHead()+1, "head"));
+		if(this.getShield()<5) 
+			specRewards.add(new SpecialReward(this.getShield()+1, "shield"));
+		return specRewards;
+	}
 }
 }

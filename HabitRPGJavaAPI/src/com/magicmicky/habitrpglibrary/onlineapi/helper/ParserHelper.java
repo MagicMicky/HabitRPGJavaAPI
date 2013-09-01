@@ -64,6 +64,7 @@ public class ParserHelper {
 		private static final String TAG_PREFS_ARMORSET = "armorSet";
 		private static final String TAG_PREFS_SHOWHELM = "showHelm";
 		private static final String TAG_PREFS_DAYSTART = "dayStart";
+		private static final String TAG_PREFS_TIMEZONEOFFSET ="timezoneOffset";
 	private static final String TAG_ITEMS = "items";
 		private static final String TAG_ITEMS_ARMOR = "armor";
 		private static final String TAG_ITEMS_HEAD = "head";
@@ -213,6 +214,8 @@ public class ParserHelper {
 				user.setDayStart(prefs.getInt(TAG_PREFS_DAYSTART));
 			else
 				user.setDayStart(0);
+			if(prefs.has(TAG_PREFS_TIMEZONEOFFSET))
+				user.setTimeZoneOffset(prefs.getInt(TAG_PREFS_TIMEZONEOFFSET));
 		}
 		if(obj.has(TAG_AUTH)) {
 			JSONObject auth = obj.getJSONObject(TAG_AUTH);
@@ -310,14 +313,14 @@ public class ParserHelper {
 	public static HabitItem parseHabitItem(JSONObject obj) throws ParseErrorException {
 		parseError(obj);
 		try {
-			if(obj.getString(TAG_TASK_TYPE) == "reward") {
+			if(obj.getString(TAG_TASK_TYPE).equals("reward")) {
 				return parseReward(obj);
 			}
-			else if(obj.getString(TAG_TASK_TYPE) == "habit") {
+			else if(obj.getString(TAG_TASK_TYPE).equals("habit")) {
 				return parseHabit(obj);
-			} else if(obj.getString(TAG_TASK_TYPE) == "daily") {
+			} else if(obj.getString(TAG_TASK_TYPE).equals("daily")) {
 				return parseDaily(obj);
-			} else if(obj.getString(TAG_TASK_TYPE) == "todo") {
+			} else if(obj.getString(TAG_TASK_TYPE).equals("todo")) {
 				return parseTodo(obj);
 			}
 		} catch (JSONException e) {
