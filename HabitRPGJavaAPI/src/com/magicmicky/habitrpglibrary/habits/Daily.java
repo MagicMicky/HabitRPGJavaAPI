@@ -1,5 +1,7 @@
 package com.magicmicky.habitrpglibrary.habits;
 
+import java.text.SimpleDateFormat;
+
 
 /**
  * A daily item. It contains the item called "Daily" on the website
@@ -10,7 +12,7 @@ public class Daily extends HabitItem{
 	private final static String[] days = {"m","t","w","th","f","s","su"};
 	private boolean completed;
 	private boolean[] repeat;
-	private long lastCompleted;
+	private String lastCompleted;
 	private int streak;
 	/**
 	 * Construct a daily based on all the information needed
@@ -29,12 +31,12 @@ public class Daily extends HabitItem{
 		this.setRepeat(repeat);
 	}
 	public Daily(String id, String notes, String priority, String text,
-			double value, boolean completed, boolean[] repeat, long lastCompleted) {
+			double value, boolean completed, boolean[] repeat, String lastCompleted) {
 		this(id, notes, priority, text, value,completed,repeat);
 		this.setLastCompleted(lastCompleted);
 	}
 	public Daily(String id, String notes, String priority, String text,
-			double value, boolean completed, boolean[] repeat, int streak, long lastCompleted) {
+			double value, boolean completed, boolean[] repeat, int streak, String lastCompleted) {
 		this(id, notes, priority, text, value,completed,repeat,lastCompleted);
 		this.setStreak(streak);
 	}
@@ -93,15 +95,17 @@ public class Daily extends HabitItem{
 		return json.toString();
 	}
 	/**
+	 * Formated: 
+	 * SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	 * @return the lastCompleted
 	 */
-	public long getLastCompleted() {
+	public String getLastCompleted() {
 		return lastCompleted;
 	}
 	/**
 	 * @param lastCompleted the lastCompleted to set
 	 */
-	public void setLastCompleted(long lastCompleted) {
+	public void setLastCompleted(String lastCompleted) {
 		this.lastCompleted = lastCompleted;
 	}
 	/**

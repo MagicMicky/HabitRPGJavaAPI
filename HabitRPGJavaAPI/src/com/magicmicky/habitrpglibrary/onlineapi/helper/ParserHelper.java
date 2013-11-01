@@ -78,7 +78,12 @@ public class ParserHelper {
 		private static final String TAG_DELTA = "delta";
 
 		private static final String TAG_TASK_DELETED = "task_deleted";
-
+		
+		//Hotfix
+		private static final String TAG_DAILIES="dailys";
+		private static final String TAG_HABITS="habits";
+		private static final String TAG_TODOS="todos";
+		private static final String TAG_REWARDS="rewards";
 	
 	public static User parseUser(JSONObject obj) throws ParseErrorException{
 		parseError(obj);
@@ -239,19 +244,40 @@ public class ParserHelper {
 		List<HabitItem> items = new ArrayList<HabitItem>();
 		//First, parse the TASKS tag to find all tasks.
 		JSONObject tasks;
-		try {
-			tasks = obj.getJSONObject(TAG_TASKS);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_TASKS_TAGS);
-			throw(ex);
-		}
+		//try {
+			try {
+				JSONArray h = obj.getJSONArray(TAG_HABITS);
+				for(int i=0;i<h.length();i++) {
+					items.add(parseHabit(h.getJSONObject(i)));
+				}
+				JSONArray d = obj.getJSONArray(TAG_DAILIES);
+	
+				for(int i=0;i<d.length();i++) {
+					items.add(parseDaily(d.getJSONObject(i)));
+				}
+				JSONArray r = obj.getJSONArray(TAG_TODOS);
+				for(int i=0;i<r.length();i++) {
+					items.add(parseReward(r.getJSONObject(i)));
+				}
+				JSONArray t = obj.getJSONArray(TAG_TODOS);
+				for(int i=0;i<t.length();i++) {
+					items.add(parseTodo(t.getJSONObject(i)));
+				}
+				
+				
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
+
+			//tasks = obj.getJSONObject(TAG_TASKS);
+		
 		
 		/*
 		 * Then parse DAILISES tag to find dailies id
 		 * and loop through them to find it in the TASKS tags
 		 */
-		try {
+		/*try {
 			JSONArray dailies = obj.getJSONArray(TAG_DAILIESID);
 			for(int i=0;i<dailies.length();i++) {
 				if(tasks.has(dailies.getString(i))) {
@@ -304,7 +330,43 @@ public class ParserHelper {
 			ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_REWARDS_TAGS);
 			throw(ex);
 		}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			//tasks = obj.getJSONObject(key)
+			
+			try {
+				JSONArray h = obj.getJSONArray(TAG_HABITS);
+				for(int i=0;i<h.length();i++) {
+					items.add(parseHabit(h.getJSONObject(i)));
+				}
+				JSONArray d = obj.getJSONArray(TAG_DAILIES);
+	
+				for(int i=0;i<d.length();i++) {
+					items.add(parseDaily(d.getJSONObject(i)));
+				}
+				JSONArray r = obj.getJSONArray(TAG_TODOS);
+				for(int i=0;i<r.length();i++) {
+					items.add(parseReward(r.getJSONObject(i)));
+				}
+				JSONArray t = obj.getJSONArray(TAG_TODOS);
+				for(int i=0;i<t.length();i++) {
+					items.add(parseTodo(t.getJSONObject(i)));
+				}
+				
+				
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	*/
+			
 		
+			//private static final String TAG_HABITS="habits";
+			//private static final String TAG_TODOS="todos";
+			//private static final String TAG_REWARDS="rewards";
+
+			//ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_TASKS_TAGS);
+			//throw(ex);
+		//}
 		return items;
 		
 	}
@@ -368,11 +430,11 @@ public class ParserHelper {
 	private static Daily parseDaily(JSONObject obj) throws ParseErrorException {
 		try {
 			Daily it;
-			long lastday=0;
+			String lastday="";
 			
 			if(obj.has(TAG_TASK_HISTORY)) {
 				JSONArray history = obj.getJSONArray(TAG_TASK_HISTORY);
-				lastday = history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE);
+				lastday = history.getJSONObject(history.length()-1).getString(TAG_TASK_HISTORY_DATE);
 			} 
 			boolean[] repeats = {false,false,false,false,false,false,false};
 			if(obj.has(TAG_TASK_REPEAT)) {
