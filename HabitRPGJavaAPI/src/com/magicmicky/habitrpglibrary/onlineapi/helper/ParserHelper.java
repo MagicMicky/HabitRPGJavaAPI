@@ -52,11 +52,8 @@ public class ParserHelper {
 		private static final String TAG_TASK_TAGS = "tags";
 		private static final String TAG_TASK_HISTORY="history";
 			private static final String TAG_TASK_HISTORY_DATE = "date";
-	private static final String TAG_AUTH = "auth";
-		private static final String TAG_AUTH_LOCAL="local";
-		private static final String TAG_AUTH_LOCAL_UNAME = "username";
-		private static final String TAG_AUTH_FACEBOOK = "facebook";
-		private static final String TAG_AUTH_FACEBOOK_DISPLAYNAME = "displayName";
+	private static final String TAG_PROFILE = "profile";
+		private static final String TAG_PROFILE_NAME="name";
 	private static final String TAG_PREFS = "preferences";
 		private static final String TAG_PREFS_GENDER = "gender";
 		private static final String TAG_PREFS_SKIN = "skin";
@@ -222,13 +219,9 @@ public class ParserHelper {
 			if(prefs.has(TAG_PREFS_TIMEZONEOFFSET))
 				user.setTimeZoneOffset(prefs.getInt(TAG_PREFS_TIMEZONEOFFSET));
 		}
-		if(obj.has(TAG_AUTH)) {
-			JSONObject auth = obj.getJSONObject(TAG_AUTH);
-			if(auth.has(TAG_AUTH_LOCAL)) {
-				user.setName(auth.getJSONObject(TAG_AUTH_LOCAL).getString(TAG_AUTH_LOCAL_UNAME));
-			} else if(auth.has(TAG_AUTH_FACEBOOK)) {
-				user.setName(auth.getJSONObject(TAG_AUTH_FACEBOOK).getString(TAG_AUTH_FACEBOOK_DISPLAYNAME));
-			}
+		if(obj.has(TAG_PROFILE)) {
+			JSONObject profile = obj.getJSONObject(TAG_PROFILE);
+				user.setName(profile.getString(TAG_PROFILE_NAME));
 		}
 		
 
@@ -255,7 +248,7 @@ public class ParserHelper {
 				for(int i=0;i<d.length();i++) {
 					items.add(parseDaily(d.getJSONObject(i)));
 				}
-				JSONArray r = obj.getJSONArray(TAG_TODOS);
+				JSONArray r = obj.getJSONArray(TAG_REWARDS);
 				for(int i=0;i<r.length();i++) {
 					items.add(parseReward(r.getJSONObject(i)));
 				}
