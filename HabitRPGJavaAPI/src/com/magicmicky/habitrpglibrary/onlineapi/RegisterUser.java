@@ -44,8 +44,8 @@ public class RegisterUser extends WebServiceInteraction {
 				.append("\"").append(TAG_USER_PASSWORD).append("\":").append(JSONObject.quote(mUserPassword)).append(",")
 				.append("\"").append(TAG_USER_CONFIRM_PASSWORD).append("\":").append(JSONObject.quote(mUserConfirmPassword))
 			.append("}");
-			StringEntity ent = new StringEntity(sb.toString());
-			ent.setContentType("application/json");
+			StringEntity ent = new StringEntity(sb.toString(), "utf-8");
+			ent.setContentType("application/json; charset=UTF-8");
 			method.setEntity(ent);
 
 		} catch (UnsupportedEncodingException e) {

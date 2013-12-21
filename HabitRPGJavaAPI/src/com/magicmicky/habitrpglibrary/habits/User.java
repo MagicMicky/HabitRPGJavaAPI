@@ -39,8 +39,8 @@ public class User {
 	public List<HabitItem> getItems(boolean withCustomRewardsUpgrade) {
 		if(withCustomRewardsUpgrade) {
 			List<HabitItem> allItems = new ArrayList<HabitItem>(items);
-			if(getLook() != null && getLook().getItems() != null && getLook().getItems().toRewardsUpgrade()!=null)
-				allItems.addAll(getLook().getItems().toRewardsUpgrade());
+		/*	if(getLook() != null && getLook().getItems() != null && getLook().getItems().toRewardsUpgrade()!=null)
+				allItems.addAll(getLook().getItems().toRewardsUpgrade());*/
 			return allItems;
 		}
 		return items;

@@ -1,6 +1,7 @@
 package com.magicmicky.habitrpglibrary.onlineapi;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +27,7 @@ import com.magicmicky.habitrpglibrary.onlineapi.helper.HabitRPGException;
  *
  */
 public abstract class WebServiceInteraction {
-	final private static String SUFFIX = "api/v1/";
+	final private static String SUFFIX = "api/v2/";
 	final private String CMD;
 	final private OnHabitsAPIResult callback;
 	private HostConfig config;
@@ -60,6 +61,7 @@ public abstract class WebServiceInteraction {
 	            client = new DefaultHttpClient();
 	            request = this.getRequest();
 
+	            
 	            request.setURI(new URI(address));
 	            request.addHeader("x-api-key", config.getApi());
 	            request.addHeader("x-api-user", config.getUser());
@@ -69,7 +71,7 @@ public abstract class WebServiceInteraction {
 	            if(response.getStatusLine().getStatusCode() == 204) {//Tasks deleted
             		String jsonstr = "{\"task_deleted\":true}";
 		            JSONObject jsonObj = new JSONObject(jsonstr);
-    	            result = findAnswer(jsonObj); 
+    	            result = findAnswer(jsonObj);
             	}
 	            else {
 	            	if(response.getStatusLine().getStatusCode() == 404) {

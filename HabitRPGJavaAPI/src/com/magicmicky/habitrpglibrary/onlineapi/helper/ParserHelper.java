@@ -1,6 +1,8 @@
 package com.magicmicky.habitrpglibrary.onlineapi.helper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,18 +57,24 @@ public class ParserHelper {
 	private static final String TAG_PROFILE = "profile";
 		private static final String TAG_PROFILE_NAME="name";
 	private static final String TAG_PREFS = "preferences";
-		private static final String TAG_PREFS_GENDER = "gender";
 		private static final String TAG_PREFS_SKIN = "skin";
+		private static final String TAG_PREFS_SHIRT="shirt";
 		private static final String TAG_PREFS_HAIR = "hair";
-		private static final String TAG_PREFS_ARMORSET = "armorSet";
-		private static final String TAG_PREFS_SHOWHELM = "showHelm";
+			private static final String TAG_PREFS_HAIR_MUSTACHE="mustache";
+			private static final String TAG_PREFS_HAIR_BEARD="beard";
+			private static final String TAG_PREFS_HAIR_BANGS="bangs";
+			private static final String TAG_PREFS_HAIR_BASE="base";
+			private static final String TAG_PREFS_HAIR_COLOR="color";
+		private static final String TAG_PREFS_SIZE="size";
 		private static final String TAG_PREFS_DAYSTART = "dayStart";
 		private static final String TAG_PREFS_TIMEZONEOFFSET ="timezoneOffset";
 	private static final String TAG_ITEMS = "items";
-		private static final String TAG_ITEMS_ARMOR = "armor";
-		private static final String TAG_ITEMS_HEAD = "head";
-		private static final String TAG_ITEMS_SHIELD = "shield";
-		private static final String TAG_ITEMS_WEAPON = "weapon";
+		private static final String TAG_ITEMS_GEAR="gear";
+		private static final String TAG_ITEMS_GEAR_EQUIPPED="equipped";
+			private static final String TAG_ITEMS_ARMOR = "armor";
+			private static final String TAG_ITEMS_HEAD = "head";
+			private static final String TAG_ITEMS_SHIELD = "shield";
+			private static final String TAG_ITEMS_WEAPON = "weapon";
 
 		//TODO:private static final String TAG_ITEMS_PETS = "pets";
 		private static final String TAG_NOWXP = "exp";
@@ -155,22 +163,30 @@ public class ParserHelper {
 				JSONObject prefs;
 				prefs = obj.getJSONObject(TAG_PREFS);
 	
-				if(prefs.has(TAG_PREFS_GENDER))
-					look.setGender(prefs.getString(TAG_PREFS_GENDER));
+				if(prefs.has(TAG_PREFS_SIZE))
+					look.setSize(prefs.getString(TAG_PREFS_SIZE));
+				if(prefs.has(TAG_PREFS_SHIRT)) 
+					look.setShirtColor(prefs.getString(TAG_PREFS_SHIRT));
 				if(prefs.has(TAG_PREFS_SKIN))
 					look.setSkin(prefs.getString(TAG_PREFS_SKIN));
-				if(prefs.has(TAG_PREFS_HAIR))
-					look.setHair(prefs.getString(TAG_PREFS_HAIR));
-				if(prefs.has(TAG_PREFS_ARMORSET))
-					look.setArmorSet(prefs.getString(TAG_PREFS_ARMORSET));
-				if(prefs.has(TAG_PREFS_SHOWHELM))
-					look.setShowHelm(prefs.getBoolean(TAG_PREFS_SHOWHELM));
+				if(prefs.has(TAG_PREFS_HAIR)) {
+					JSONObject hair = prefs.getJSONObject(TAG_PREFS_HAIR);
+					int mustache = hair.getInt(TAG_PREFS_HAIR_MUSTACHE);
+					int beard = hair.getInt(TAG_PREFS_HAIR_BEARD);
+					int bangs = hair.getInt(TAG_PREFS_HAIR_BANGS);
+					int base = hair.getInt(TAG_PREFS_HAIR_BASE);
+					String color = hair.getString(TAG_PREFS_HAIR_COLOR);
+					//UserHair user_hair = new UserHair(mustache, beard, bangs, base, color);
+					UserHair user_hair = new UserHair(mustache, beard,bangs,base, color);
+					look.setHair(user_hair);
+
+				}
 			}catch(JSONException e) {
 				throw new ParseErrorException(ParseErrorException.JSON_USER_PREFS_ERROR);
 			}
 		}
 		try {
-			look.setItems(parseUserItems(obj.getJSONObject(TAG_ITEMS)));
+			look.setItems(parseUserItems(obj.getJSONObject(TAG_ITEMS).getJSONObject(TAG_ITEMS_GEAR).getJSONObject(TAG_ITEMS_GEAR_EQUIPPED)));
 		} catch(JSONException e) {
 			throw new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_ITEMS);
 		}
@@ -178,16 +194,16 @@ public class ParserHelper {
 	}
 	public static UserLook.UserItems parseUserItems(JSONObject obj) throws ParseErrorException  {
 		parseError(obj);
-		int armor=0, head=0, shield=0, weapon=0;
+		String armor = null, head = null, shield = null, weapon = null;
 		try {
 			if(obj.has(TAG_ITEMS_ARMOR))
-				armor = (obj.getInt(TAG_ITEMS_ARMOR));
+				armor = (obj.getString(TAG_ITEMS_ARMOR));
 			if(obj.has(TAG_ITEMS_HEAD))
-				head = (obj.getInt(TAG_ITEMS_HEAD));
+				head = (obj.getString(TAG_ITEMS_HEAD));
 			if(obj.has(TAG_ITEMS_SHIELD))
-				shield = (obj.getInt(TAG_ITEMS_SHIELD));
+				shield = (obj.getString(TAG_ITEMS_SHIELD));
 			if(obj.has(TAG_ITEMS_WEAPON))
-				weapon = (obj.getInt(TAG_ITEMS_WEAPON));
+				weapon = (obj.getString(TAG_ITEMS_WEAPON));
 		} catch (JSONException e){
 			e.printStackTrace();
 			//Should never happen
@@ -427,14 +443,26 @@ public class ParserHelper {
 			
 			if(obj.has(TAG_TASK_HISTORY)) {
 				JSONArray history = obj.getJSONArray(TAG_TASK_HISTORY);
-				lastday = history.getJSONObject(history.length()-1).getString(TAG_TASK_HISTORY_DATE);
+				if(history.length()>=1) {
+					try {
+						lastday = history.getJSONObject(history.length()-1).getString(TAG_TASK_HISTORY_DATE);
+					} catch(JSONException e) {
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+						lastday=format.format(new Date(history.getJSONObject(history.length()-1).getLong(TAG_TASK_HISTORY_DATE)));
+					}
+				}
 			} 
 			boolean[] repeats = {false,false,false,false,false,false,false};
 			if(obj.has(TAG_TASK_REPEAT)) {
 				JSONObject repeatTag = obj.getJSONObject(TAG_TASK_REPEAT);
 				for(int j=0;j<7;j++) {
-					if(repeatTag.has(whatDay(j)))
-						repeats[j] = repeatTag.getBoolean(whatDay(j));
+					if(repeatTag.has(whatDay(j))) {
+						try {
+							repeats[j] = repeatTag.getBoolean(whatDay(j));
+						} catch(JSONException e) {
+							repeats[j] = repeatTag.getInt(whatDay(j)) >= 1;
+						}
+					}
 				}
 			}
 			

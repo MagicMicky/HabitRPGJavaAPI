@@ -21,8 +21,8 @@ public class PutTimeZone extends WebServiceInteraction {
 	protected HttpRequestBase getRequest() {
 		HttpPut method =  new HttpPut();
 		try {
-			StringEntity ent = new StringEntity("{\"preferences.timezoneOffset\":" + mTimeZone + "}");
-			ent.setContentType("application/json");
+			StringEntity ent = new StringEntity("{\"preferences.timezoneOffset\":" + mTimeZone + "}","utf-8");
+			ent.setContentType("application/json; charset=UTF-8");
 			method.setEntity(ent);
 			System.out.println(method.getMethod());
 		} catch (UnsupportedEncodingException e) {

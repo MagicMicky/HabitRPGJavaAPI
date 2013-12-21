@@ -1,5 +1,9 @@
 package com.magicmicky.habitrpglibrary.onlineapi;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.client.methods.HttpPut;
@@ -7,13 +11,14 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.magicmicky.habitrpglibrary.habits.HabitItem;
 import com.magicmicky.habitrpglibrary.onlineapi.WebServiceInteraction.Answer;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 /**
- * Edit a new task.
+ * Edit a task.
  * @see PostTask#findAnswer(JSONObject)
  * @author Mickael
  *
@@ -29,10 +34,9 @@ public class PutTask extends PostTask {
 	protected HttpRequestBase getRequest() {
 		HttpPut method =  new HttpPut();
 		try {
-			StringEntity ent = new StringEntity(habit.getJSONString());
-			ent.setContentType("application/json");
+			StringEntity ent = new StringEntity(habit.getJSONString(), "utf-8");
+			ent.setContentType("application/json; charset=UTF-8");
 			method.setEntity(ent);
-
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

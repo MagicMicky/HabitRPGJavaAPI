@@ -1,58 +1,37 @@
 package com.magicmicky.habitrpglibrary.habits;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.magicmicky.habitrpglibrary.habits.Reward.SpecialReward;
-
 /**
  * Class storing a user look.
  * @author MagicMicky
  *
  */
 public class UserLook {
-	private String gender;
-	private String hair;
 	private String skin;
-	private String armorSet;
-	private boolean showHelm;
+	private String shirtColor;
+	private UserHair hair;
+	private String size;
 	private UserItems items;
-	public UserLook(String gender, String hair, String skin, String armorSet, boolean showHelm
-			, int armor, int head, int shield, int weapon) {
-		this.gender=gender;
+	public UserLook(UserHair hair, String skin, String armorSet, String size, String shirtColor
+			, String armor, String head, String shield, String weapon) {
 		this.hair=hair;
 		this.skin=skin;
-		this.armorSet=armorSet;
-		this.showHelm=showHelm;
+		this.size = size;
+		this.shirtColor = shirtColor;
 		setItems(new UserItems(armor,head,shield,weapon));
 	}
 	public UserLook () {
 		setItems(new UserItems());
 	}
 	/**
-	 * @return the gender of the user
-	 */
-	public String getGender() {
-		return gender;
-	}
-	/**
-	 * Gender should be either "m" or "f"
-	 * @param gender the gender to set
-	 */
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-	/**
 	 * @return the hair of the user.
 	 */
-	public String getHair() {
+	public UserHair getHair() {
 		return hair;
 	}
 	/**
-	 * Hair can be either "blond", "brown", "black" or "white" 
 	 * @param hair the hair to set
 	 */
-	public void setHair(String hair) {
+	public void setHair(UserHair hair) {
 		this.hair = hair;
 	}
 	/**
@@ -62,37 +41,10 @@ public class UserLook {
 		return skin;
 	}
 	/**
-	 * Skin should be either "orc", "asian", "black", "white", "dead"
 	 * @param skin the skin to set
 	 */
 	public void setSkin(String skin) {
 		this.skin = skin;
-	}
-	/**
-	 * @return the armorSet
-	 */
-	public String getArmorSet() {
-		return armorSet;
-	}
-	/**
-	 * The version of the armorSet "v1", or "v2". Should be used to determine the head and the armor for females.
-	 * @param armorSet the armorSet to set
-	 */
-	public void setArmorSet(String armorSet) {
-		this.armorSet = armorSet;
-	}
-	/**
-	 * @return the showHelm
-	 */
-	public boolean isShowHelm() {
-		return showHelm;
-	}
-	/**
-	 * Whether or not the helm should be shown
-	 * @param showHelm the showHelm to set
-	 */
-	public void setShowHelm(boolean showHelm) {
-		this.showHelm = showHelm;
 	}
 
 	@Override
@@ -100,10 +52,10 @@ public class UserLook {
 	 * Return a string to show the UserLook easily.
 	 */
 	public String toString() {
-		return this.gender + ": armor" + this.getItems().getArmor() + " head" + this.getItems().getHead()
+		/*return  + ": armor" + this.getItems().getArmor() + " head" + this.getItems().getHead()
 				+ " hair" + this.hair + " skin" + this.getSkin()
-				+ " weapon" + this.getItems().getWeapon() + " shield" + this.getItems().getShield();
-		
+				+ " weapon" + this.getItems().getWeapon() + " shield" + this.getItems().getShield();*/
+		return "";
 	}
 	/**
 	 * @return the items
@@ -117,95 +69,119 @@ public class UserLook {
 	public void setItems(UserItems items) {
 		this.items = items;
 	}
+	/**
+	 * @return the shirtColor
+	 */
+	public String getShirtColor() {
+		return shirtColor;
+	}
+	/**
+	 * @param shirtColor the shirtColor to set
+	 */
+	public void setShirtColor(String shirtColor) {
+		this.shirtColor = shirtColor;
+	}
+	/**
+	 * @return the size
+	 */
+	public String getSize() {
+		return size;
+	}
+	/**
+	 * @param size the size to set
+	 */
+	public void setSize(String size) {
+		this.size = size;
+	}
 	public static class UserItems {
 		/*
 		 * items
 		 */
-		private int armor;
-		private int head;
-		private int shield;
-		private int weapon;
+		private String armor;
+		private String head;
+		private String shield;
+		private String weapon;
 
 		public UserItems() {
 			
 		}
-		public UserItems(int armor,int head, int shield, int weapon) {
+		public UserItems(String armor,String head, String shield, String weapon) {
 			this.setArmor(armor);
 			this.setHead(head);
 			this.setShield(shield);
 			this.setWeapon(weapon);
 		}
-	/**
-	 * @return the armor
-	 */
-	public int getArmor() {
-		return armor;
+		/**
+		 * @return the armor
+		 */
+		public String getArmor() {
+			return armor;
+		}
+		/**
+		 * the armor of the user ( a 0-5 value)
+		 * @param armor the armor to set
+		 */
+		public void setArmor(String armor) {
+			this.armor = armor;
+		}
+		/**
+		 * @return the head
+		 */
+		public String getHead() {
+			return head;
+		}
+		/**
+		 * The helmet of the user (0-5)
+		 * @param head the head to set
+		 */
+		public void setHead(String head) {
+			this.head = head;
+		}
+		/**
+		 * @return the shield
+		 */
+		public String getShield() {
+			return shield;
+		}
+		/**
+		 * The shield of the user (0-5 value), 0 being no shield
+		 * @param shield the shield to set
+		 */
+		public void setShield(String shield) {
+			this.shield = shield;
+		}
+		/**
+		 * @return the weapon
+		 */
+		public String getWeapon() {
+			return weapon;
+		}
+		/**
+		 * The weapon of the user (0-6 value)
+		 * @param weapon the weapon to set
+		 */
+		public void setWeapon(String weapon) {
+			this.weapon = weapon;
+		}
+		/*public List<Reward> toRewards() {
+			List<Reward> specRewards = new ArrayList<Reward>();
+			specRewards.add(new SpecialReward(this.getWeapon(), "weapon"));
+			specRewards.add(new SpecialReward(this.getArmor(), "armor"));
+			specRewards.add(new SpecialReward(this.getHead(), "head"));
+			specRewards.add(new SpecialReward(this.getShield(), "shield"));
+			return specRewards;
+		}
+		public List<Reward> toRewardsUpgrade() {
+			List<Reward> specRewards = new ArrayList<Reward>();
+			if(this.getWeapon()<6)
+				specRewards.add(new SpecialReward(this.getWeapon() +1, "weapon"));
+			if(this.getArmor() < 5)
+				specRewards.add(new SpecialReward(this.getArmor() +1, "armor"));
+			if(this.getHead()< 5)
+				specRewards.add(new SpecialReward(this.getHead()+1, "head"));
+			if(this.getShield()<5) 
+				specRewards.add(new SpecialReward(this.getShield()+1, "shield"));
+			return specRewards;
+		}*/
 	}
-	/**
-	 * the armor of the user ( a 0-5 value)
-	 * @param armor the armor to set
-	 */
-	public void setArmor(int armor) {
-		this.armor = armor;
-	}
-	/**
-	 * @return the head
-	 */
-	public int getHead() {
-		return head;
-	}
-	/**
-	 * The helmet of the user (0-5)
-	 * @param head the head to set
-	 */
-	public void setHead(int head) {
-		this.head = head;
-	}
-	/**
-	 * @return the shield
-	 */
-	public int getShield() {
-		return shield;
-	}
-	/**
-	 * The shield of the user (0-5 value), 0 being no shield
-	 * @param shield the shield to set
-	 */
-	public void setShield(int shield) {
-		this.shield = shield;
-	}
-	/**
-	 * @return the weapon
-	 */
-	public int getWeapon() {
-		return weapon;
-	}
-	/**
-	 * The weapon of the user (0-6 value)
-	 * @param weapon the weapon to set
-	 */
-	public void setWeapon(int weapon) {
-		this.weapon = weapon;
-	}
-	public List<Reward> toRewards() {
-		List<Reward> specRewards = new ArrayList<Reward>();
-		specRewards.add(new SpecialReward(this.getWeapon(), "weapon"));
-		specRewards.add(new SpecialReward(this.getArmor(), "armor"));
-		specRewards.add(new SpecialReward(this.getHead(), "head"));
-		specRewards.add(new SpecialReward(this.getShield(), "shield"));
-		return specRewards;
-	}
-	public List<Reward> toRewardsUpgrade() {
-		List<Reward> specRewards = new ArrayList<Reward>();
-		if(this.getWeapon()<6)
-			specRewards.add(new SpecialReward(this.getWeapon() +1, "weapon"));
-		if(this.getArmor() < 5)
-			specRewards.add(new SpecialReward(this.getArmor() +1, "armor"));
-		if(this.getHead()< 5)
-			specRewards.add(new SpecialReward(this.getHead()+1, "head"));
-		if(this.getShield()<5) 
-			specRewards.add(new SpecialReward(this.getShield()+1, "shield"));
-		return specRewards;
-	}
-}
 }

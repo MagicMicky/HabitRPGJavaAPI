@@ -41,8 +41,8 @@ public class PostTask extends WebServiceInteraction {
 	protected HttpRequestBase getRequest() {
 		HttpPost method =  new HttpPost();
 		try {
-			StringEntity ent = new StringEntity(habit.getJSONString());
-			ent.setContentType("application/json");
+			StringEntity ent = new StringEntity(habit.getJSONString(), "utf-8");
+			ent.setContentType("application/json; charset=UTF-8");
 			method.setEntity(ent);
 
 		} catch (UnsupportedEncodingException e) {
