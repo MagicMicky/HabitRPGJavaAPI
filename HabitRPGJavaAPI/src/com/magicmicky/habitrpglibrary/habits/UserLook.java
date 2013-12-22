@@ -109,11 +109,19 @@ public class UserLook {
 	public boolean isCostume() {
 		return costume;
 	}
-
+	/**
+	 * Set the costume items of the user
+	 * @param costumeItems
+	 */
 	public void setCostumeItems(UserItems costumeItems) {
 		this.costumeItems = costumeItems;
 	}
-	
+	/**
+	 * @return the costume items of the user
+	 */
+	public UserItems getCostumeItems() {
+		return this.costumeItems;
+	}
 	public static class UserItems {
 		/*
 		 * items
