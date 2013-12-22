@@ -57,6 +57,7 @@ public class ParserHelper {
 	private static final String TAG_PROFILE = "profile";
 		private static final String TAG_PROFILE_NAME="name";
 	private static final String TAG_PREFS = "preferences";
+		private static final String TAG_PREFS_COSTUME="costume";
 		private static final String TAG_PREFS_SKIN = "skin";
 		private static final String TAG_PREFS_SHIRT="shirt";
 		private static final String TAG_PREFS_HAIR = "hair";
@@ -71,6 +72,7 @@ public class ParserHelper {
 	private static final String TAG_ITEMS = "items";
 		private static final String TAG_ITEMS_GEAR="gear";
 		private static final String TAG_ITEMS_GEAR_EQUIPPED="equipped";
+		private static final String TAG_ITEMS_GEAR_COSTUME = "costume";
 			private static final String TAG_ITEMS_ARMOR = "armor";
 			private static final String TAG_ITEMS_HEAD = "head";
 			private static final String TAG_ITEMS_SHIELD = "shield";
@@ -162,7 +164,9 @@ public class ParserHelper {
 			try {
 				JSONObject prefs;
 				prefs = obj.getJSONObject(TAG_PREFS);
-	
+				if(prefs.has(TAG_PREFS_COSTUME)) {
+					look.setCostume(prefs.getBoolean(TAG_PREFS_COSTUME));
+				}
 				if(prefs.has(TAG_PREFS_SIZE))
 					look.setSize(prefs.getString(TAG_PREFS_SIZE));
 				if(prefs.has(TAG_PREFS_SHIRT)) 
@@ -190,6 +194,12 @@ public class ParserHelper {
 		} catch(JSONException e) {
 			throw new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_ITEMS);
 		}
+		try {
+			look.setCostumeItems(parseUserItems(obj.getJSONObject(TAG_ITEMS).getJSONObject(TAG_ITEMS_GEAR).getJSONObject(TAG_ITEMS_GEAR_COSTUME)));
+		} catch(JSONException e) {
+			throw new ParseErrorException(ParseErrorException.JSON_USER_HAS_NO_ITEMS);
+		}
+
 		return look;
 	}
 	public static UserLook.UserItems parseUserItems(JSONObject obj) throws ParseErrorException  {

@@ -1,5 +1,7 @@
 package com.magicmicky.habitrpglibrary.habits;
 
+import com.magicmicky.habitrpglibrary.habits.UserLook.UserItems;
+
 /**
  * Class storing a user look.
  * @author MagicMicky
@@ -10,7 +12,8 @@ public class UserLook {
 	private String shirtColor;
 	private UserHair hair;
 	private String size;
-	private UserItems items;
+	private boolean costume;
+	private UserItems items, costumeItems;
 	public UserLook(UserHair hair, String skin, String armorSet, String size, String shirtColor
 			, String armor, String head, String shield, String weapon) {
 		this.hair=hair;
@@ -93,6 +96,24 @@ public class UserLook {
 	public void setSize(String size) {
 		this.size = size;
 	}
+	/**
+	 * Set whether or not the user is using a costume
+	 * @param costume
+	 */
+	public void setCostume(boolean costume) {
+		this.costume=costume;
+	}
+	/**
+	 * @return whether or not the user is using a costume
+	 */
+	public boolean isCostume() {
+		return costume;
+	}
+
+	public void setCostumeItems(UserItems costumeItems) {
+		this.costumeItems = costumeItems;
+	}
+	
 	public static class UserItems {
 		/*
 		 * items
@@ -144,7 +165,6 @@ public class UserLook {
 			return shield;
 		}
 		/**
-		 * The shield of the user (0-5 value), 0 being no shield
 		 * @param shield the shield to set
 		 */
 		public void setShield(String shield) {
@@ -157,12 +177,13 @@ public class UserLook {
 			return weapon;
 		}
 		/**
-		 * The weapon of the user (0-6 value)
 		 * @param weapon the weapon to set
 		 */
 		public void setWeapon(String weapon) {
 			this.weapon = weapon;
 		}
+
+		
 		/*public List<Reward> toRewards() {
 			List<Reward> specRewards = new ArrayList<Reward>();
 			specRewards.add(new SpecialReward(this.getWeapon(), "weapon"));
@@ -184,4 +205,7 @@ public class UserLook {
 			return specRewards;
 		}*/
 	}
+
+
+
 }
