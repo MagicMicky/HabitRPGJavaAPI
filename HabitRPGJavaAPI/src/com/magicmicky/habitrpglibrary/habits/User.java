@@ -16,6 +16,7 @@ public class User {
 	private int dayStart;
 	private UserLook look;
 	private Map<String, String> tags;
+	private List<String> pets, mounts, eggs, hatchingPotions, food;
 	private int timeZoneOffset;
 	private String userClass;
 	/**
@@ -253,5 +254,65 @@ public class User {
 	 */
 	public String getUserClass() {
 		return this.userClass;
+	}
+	/**
+	 * @return the pets
+	 */
+	public List<String> getPets() {
+		return pets;
+	}
+	/**
+	 * @param pets the pets to set
+	 */
+	public void setPets(List<String> pets) {
+		this.pets = pets;
+	}
+	/**
+	 * @return the mounts
+	 */
+	public List<String> getMounts() {
+		return mounts;
+	}
+	/**
+	 * @param mounts the mounts to set
+	 */
+	public void setMounts(List<String> mounts) {
+		this.mounts = mounts;
+	}
+	/**
+	 * @return the eggs
+	 */
+	public List<String> getEggs() {
+		return eggs;
+	}
+	/**
+	 * @param eggs the eggs to set
+	 */
+	public void setEggs(List<String> eggs) {
+		this.eggs = eggs;
+	}
+	/**
+	 * @return the hatchingPotions
+	 */
+	public List<String> getHatchingPotions() {
+		return hatchingPotions;
+	}
+	/**
+	 * @param hatchingPotions the hatchingPotions to set
+	 */
+	public void setHatchingPotions(List<String> hatchingPotions) {
+		this.hatchingPotions = hatchingPotions;
+	}
+	/**
+	 * @return the food
+	 */
+	public List<String> getFood() {
+		return food;
+	}
+	/**
+	 * @param food the food to set
+	 */
+	public void setFood(List<String> food) {
+		this.food = food;
 	}
 }

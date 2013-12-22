@@ -72,6 +72,11 @@ public class ParserHelper {
 		private static final String TAG_PREFS_DAYSTART = "dayStart";
 		private static final String TAG_PREFS_TIMEZONEOFFSET ="timezoneOffset";
 	private static final String TAG_ITEMS = "items";
+		private static final String TAG_ITEMS_PETS = "pets";
+		private static final String TAG_ITEMS_MOUNTS="mounts";
+		private static final String TAG_ITEMS_EGGS="eggs";
+		private static final String TAG_ITEMS_HATCHING_POTIONS="hatchingPotions";
+		private static final String TAG_ITEMS_FOOD="food";
 		private static final String TAG_ITEMS_GEAR="gear";
 		private static final String TAG_ITEMS_GEAR_EQUIPPED="equipped";
 		private static final String TAG_ITEMS_GEAR_COSTUME = "costume";
@@ -139,8 +144,78 @@ public class ParserHelper {
 			e.printStackTrace();
 			//exceptions.add(new ParseErrorException(ParseErrorException.JSON_USER_TAGS_NOT_FOUND));
 		}
+		try {
+			parseUserInventory(obj.getJSONObject(TAG_ITEMS), user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			//exceptions.add(new ParseErrorException(ParseErrorException.JSON_USER_TAGS_NOT_FOUND));
+		}
+
 		return user;
 		
+	}
+	private static void parseUserInventory(JSONObject obj, User user) {
+		List<String> pets, mounts, eggs, hatchingPotions, food;
+		//Pets:
+		try {
+			JSONObject pets_json = obj.getJSONObject(TAG_ITEMS_PETS);
+
+			JSONArray pets_array = pets_json.names();
+			pets = new ArrayList<String>();
+			for(int i = 0;i<pets_array.length()-1;i++) {
+				if(pets_json.getInt(pets_array.getString(i))>=1) {
+					pets.add(pets_array.getString(i));
+				}
+			}
+			user.setPets(pets);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		/*Mounts
+		JSONArray mounts_array = obj.getJSONArray(TAG_ITEMS_MOUNTS);*/
+		try {
+			//Eggs
+			JSONObject eggs_json = obj.getJSONObject(TAG_ITEMS_EGGS);
+			JSONArray eggs_array = eggs_json.names();
+			eggs = new ArrayList<String>();
+			for(int i = 0;i<eggs_array.length()-1;i++) {
+				if(eggs_json.getInt(eggs_array.getString(i))>=1) {
+					eggs.add(eggs_array.getString(i));
+				}
+			}
+			user.setEggs(eggs);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		try {
+			//hatching potions
+			JSONObject pot_json = obj.getJSONObject(TAG_ITEMS_HATCHING_POTIONS);
+			JSONArray pot_array = pot_json.names();
+			hatchingPotions = new ArrayList<String>();
+			for(int i = 0;i<pot_array.length()-1;i++) {
+				if(pot_json.getInt(pot_array.getString(i))>=1) {
+					hatchingPotions.add(pot_array.getString(i));
+				}
+			}
+			user.setHatchingPotions(hatchingPotions);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		try {
+			//food
+			JSONObject food_json = obj.getJSONObject(TAG_ITEMS_FOOD);
+			JSONArray food_array = food_json.names();
+			food = new ArrayList<String>();
+			for(int i = 0;i<food_array.length()-1;i++) {
+				if(food_json.getInt(food_array.getString(i))>=1) {
+					food.add(food_array.getString(i));
+				}
+			}
+			user.setFood(food);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	
 	}
 	/**
 	 * Parses the tags from the user
