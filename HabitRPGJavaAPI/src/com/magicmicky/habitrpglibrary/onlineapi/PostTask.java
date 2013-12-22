@@ -21,12 +21,12 @@ import com.magicmicky.habitrpglibrary.habits.ToDo;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 /**
- * Allows creation of a new task using POST /api/v1/user/task
+ * Allows creation of a new task using POST /api/v2/user/tasks
  * @author Mickael
  * @see OnHabitsAPIResult#onPostTaskAnswer(HabitItem)
  */
 public class PostTask extends WebServiceInteraction {
-	private static final String CMD = "user/task/";
+	private static final String CMD = "user/tasks/";
 	protected HabitItem habit;
 	public PostTask(OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {
 		super(CMD, callback, config);

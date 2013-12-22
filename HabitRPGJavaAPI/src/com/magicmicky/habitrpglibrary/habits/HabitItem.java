@@ -13,9 +13,10 @@ import org.json.JSONObject;
 public abstract class HabitItem {
 	private String id;
 	private String notes;
-	private String priority;
+	private int priority;
 	private String text;
 	private double value;
+	private String attribute;
 	private List<String> tagsId;
 	/**
 	 * Create a new HabitItem from what is necessary
@@ -25,7 +26,7 @@ public abstract class HabitItem {
 	 * @param text the text of the habit
 	 * @param value the value (points) of the habit
 	 */
-	public HabitItem(String id, String notes, String priority, String text, double value) {
+	public HabitItem(String id, String notes, int priority, String text, double value) {
 		this.setId(id);
 		this.setNotes(notes);
 		this.setPriority(priority);
@@ -35,7 +36,7 @@ public abstract class HabitItem {
 
 	}
 	public HabitItem() {
-		this("","","!","",0);
+		this("","",1,"",0);
 	}
 	/**
 	 * @return the id
@@ -64,18 +65,14 @@ public abstract class HabitItem {
 	/**
 	 * @return the priority
 	 */
-	public String getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 	/**
-	 * @param priority the priority to set
+	 * @param i the priority to set
 	 */
-	public void setPriority(String priority) {
-		if(priority != null && priority.matches("!+")) {
-			this.priority = priority;
-		} else {
-			this.priority="!";
-		}
+	public void setPriority(int i) {
+		this.priority = i;
 	}
 	/**
 	 * @return the text
@@ -158,6 +155,21 @@ public abstract class HabitItem {
 				json.deleteCharAt(json.length()-1);
 				json.append("},");
 			}
+			if(this.getAttribute()!=null) {
+				json.append("\"attribute\":\"").append(this.getAttribute()).append("\",");
+			}
 		return 	json.toString();
+	}
+	/**
+	 * @return the attribute
+	 */
+	public String getAttribute() {
+		return attribute;
+	}
+	/**
+	 * @param attribute the attribute to set
+	 */
+	public void setAttribute(String attribute) {
+		this.attribute = attribute;
 	}
 }

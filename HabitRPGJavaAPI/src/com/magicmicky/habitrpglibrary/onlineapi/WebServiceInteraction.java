@@ -57,11 +57,9 @@ public abstract class WebServiceInteraction {
 	        // Making HTTP request
 	        try {
 	            String address = config.getAddress();
-	            address = address.concat(address.charAt(address.length()-1) == '/' ? SUFFIX + this.CMD : "/api/v1/" + this.CMD);
+	            address = address.concat(address.charAt(address.length()-1) == '/' ? SUFFIX + this.CMD : '/' + SUFFIX + this.CMD);
 	            client = new DefaultHttpClient();
 	            request = this.getRequest();
-
-	            
 	            request.setURI(new URI(address));
 	            request.addHeader("x-api-key", config.getApi());
 	            request.addHeader("x-api-user", config.getUser());

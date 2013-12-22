@@ -32,6 +32,7 @@ public class ParserHelper {
 		private static final String TAG_TAGS_ID = "id";
 		private static final String TAG_TAGS_NAME = "name";
 	private static final String TAG_STATS = "stats";
+		private static final String TAG_STATS_CLASS = "class";
 		private static final String TAG_XP = "exp";
 		private static final String TAG_GP = "gp";
 		private static final String TAG_HP = "hp";
@@ -46,6 +47,7 @@ public class ParserHelper {
 		private static final String TAG_TASK_PRIORITY = "priority";
 		private static final String TAG_TASK_TEXT = "text";
 		private static final String TAG_TASK_VALUE = "value";
+		private static final String TAG_TASK_ATTRIBUTE="attribute";
 		private static final String TAG_TASK_COMPLETED = "completed";
 		private static final String TAG_TASK_UP = "up";
 		private static final String TAG_TASK_DOWN = "down";
@@ -235,6 +237,8 @@ public class ParserHelper {
 				user.setMaxHp(stats.getDouble(TAG_HP_MAX));
 			if(stats.has(TAG_GP))
 				user.setGp(stats.getDouble(TAG_GP));
+			if(stats.has(TAG_STATS_CLASS))
+				user.setUserClass(stats.getString(TAG_STATS_CLASS));
 		}
 		if(obj.has(TAG_PREFS)) {
 			JSONObject prefs = obj.getJSONObject(TAG_PREFS);
@@ -522,11 +526,13 @@ public class ParserHelper {
 		if(habit.has(TAG_TASK_NOTES))
 			it.setNotes(habit.getString(TAG_TASK_NOTES));
 		if(habit.has(TAG_TASK_PRIORITY))
-			it.setPriority(habit.getString(TAG_TASK_PRIORITY));
+			it.setPriority(habit.getInt(TAG_TASK_PRIORITY));
 		if(habit.has(TAG_TASK_TEXT))
 			it.setText(habit.getString(TAG_TASK_TEXT));
 		if(habit.has(TAG_TASK_VALUE))
 			it.setValue(habit.getDouble(TAG_TASK_VALUE));
+		if(habit.has(TAG_TASK_ATTRIBUTE))
+			it.setAttribute(habit.getString(TAG_TASK_ATTRIBUTE));
 		if(habit.has(TAG_TASK_TAGS) &&  !habit.isNull(TAG_TASK_TAGS)) {
 			try {
 				JSONObject tagsJSON = habit.getJSONObject(TAG_TASK_TAGS);

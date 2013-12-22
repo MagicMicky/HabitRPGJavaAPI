@@ -17,6 +17,7 @@ public class User {
 	private UserLook look;
 	private Map<String, String> tags;
 	private int timeZoneOffset;
+	private String userClass;
 	/**
 	 * Create a new User
 	 */
@@ -239,5 +240,18 @@ public class User {
 	 */
 	public boolean isUserDead() {
 		return this.getHp()<=0;
+	}
+	/**
+	 * sets the class of the user
+	 * @param userClass
+	 */
+	public void setUserClass(String userClass) {
+		this.userClass = userClass;
+	}
+	/**
+	 * @return the class of the user
+	 */
+	public String getUserClass() {
+		return this.userClass;
 	}
 }

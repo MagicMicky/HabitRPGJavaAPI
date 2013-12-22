@@ -1,6 +1,5 @@
 package com.magicmicky.habitrpglibrary.habits;
 
-import com.magicmicky.habitrpglibrary.habits.UserLook.UserItems;
 
 /**
  * Class storing a user look.

@@ -24,7 +24,7 @@ import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
  *
  */
 public class PutTask extends PostTask {
-	private static final String CMD = "user/task/";
+	private static final String CMD = "user/tasks/";
 
 	public PutTask(OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {
 		super(CMD + habit.getId(), callback, config, habit);
