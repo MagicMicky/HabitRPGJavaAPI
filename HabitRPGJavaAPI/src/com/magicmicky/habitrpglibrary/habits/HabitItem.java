@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public abstract class HabitItem {
 	private String id;
 	private String notes;
-	private int priority;
+	private Integer priority;
 	private String text;
 	private double value;
 	private String attribute;
@@ -26,7 +26,7 @@ public abstract class HabitItem {
 	 * @param text the text of the habit
 	 * @param value the value (points) of the habit
 	 */
-	public HabitItem(String id, String notes, int priority, String text, double value) {
+	public HabitItem(String id, String notes, Integer priority, String text, double value) {
 		this.setId(id);
 		this.setNotes(notes);
 		this.setPriority(priority);
@@ -65,13 +65,13 @@ public abstract class HabitItem {
 	/**
 	 * @return the priority
 	 */
-	public int getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 	/**
 	 * @param i the priority to set
 	 */
-	public void setPriority(int i) {
+	public void setPriority(Integer i) {
 		this.priority = i;
 	}
 	/**
@@ -144,6 +144,8 @@ public abstract class HabitItem {
 		json
 			.append("\"type\":\"").append(this.getType()).append("\"," )
 			.append("\"text\":").append(JSONObject.quote(this.getText())).append("," );
+			if(this.getPriority()!=null)
+				json.append("\"priority\":").append(this.getPriority()).append(",");
 			if(this.getNotes()!=null && !this.getNotes().contentEquals(""))
 				json.append("\"notes\":").append(JSONObject.quote(this.getNotes())).append("," );
 			json.append("\"value\":").append(this.getValue()).append(",");

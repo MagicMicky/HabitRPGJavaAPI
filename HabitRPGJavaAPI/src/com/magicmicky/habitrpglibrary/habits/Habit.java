@@ -20,7 +20,7 @@ public class Habit extends HabitItem{
 	 * @param up whether or not the habit can be "upped"
 	 * @param down whether or not the habit can be "downed"
 	 */
-	public Habit(String id, String notes, int priority, String text, double value
+	public Habit(String id, String notes, Integer priority, String text, double value
 			, boolean up, boolean down) {
 		super(id, notes, priority, text, value);
 		this.setUp(up);

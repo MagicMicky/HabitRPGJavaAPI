@@ -21,7 +21,7 @@ public class ToDo extends HabitItem{
 	 * @param completed whether or not the daily is completed
 	 * @param date the due date
 	 */
-	public ToDo(String id, String notes, int priority, String text,
+	public ToDo(String id, String notes, Integer priority, String text,
 			double value, boolean completed, String date) {
 		super(id, notes, priority, text, value);
 		this.setCompleted(completed);
