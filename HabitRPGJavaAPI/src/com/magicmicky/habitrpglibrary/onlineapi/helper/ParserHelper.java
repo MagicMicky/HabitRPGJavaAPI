@@ -162,9 +162,10 @@ public class ParserHelper {
 
 			JSONArray pets_array = pets_json.names();
 			pets = new ArrayList<String>();
-			for(int i = 0;i<pets_array.length()-1;i++) {
-				if(pets_json.getInt(pets_array.getString(i))>=1) {
-					pets.add(pets_array.getString(i));
+			if(pets_array != null && pets_array.length()>0) {
+				for(int i = 0;i<pets_array.length()-1;i++) {
+					if(pets_json.getInt(pets_array.getString(i))>=1)
+						pets.add(pets_array.getString(i));
 				}
 			}
 			user.setPets(pets);
@@ -178,9 +179,10 @@ public class ParserHelper {
 			JSONObject eggs_json = obj.getJSONObject(TAG_ITEMS_EGGS);
 			JSONArray eggs_array = eggs_json.names();
 			eggs = new ArrayList<String>();
-			for(int i = 0;i<eggs_array.length()-1;i++) {
-				if(eggs_json.getInt(eggs_array.getString(i))>=1) {
-					eggs.add(eggs_array.getString(i));
+				if(eggs_array != null && eggs_array.length()>0) {
+				for(int i = 0;i<eggs_array.length()-1;i++) {
+					if(eggs_json.getInt(eggs_array.getString(i))>=1)
+						eggs.add(eggs_array.getString(i));
 				}
 			}
 			user.setEggs(eggs);
@@ -192,9 +194,10 @@ public class ParserHelper {
 			JSONObject pot_json = obj.getJSONObject(TAG_ITEMS_HATCHING_POTIONS);
 			JSONArray pot_array = pot_json.names();
 			hatchingPotions = new ArrayList<String>();
-			for(int i = 0;i<pot_array.length()-1;i++) {
-				if(pot_json.getInt(pot_array.getString(i))>=1) {
-					hatchingPotions.add(pot_array.getString(i));
+			if(pot_array!=null && pot_array.length() > 0) {
+				for(int i = 0;i<pot_array.length()-1;i++) {
+					if(pot_json.getInt(pot_array.getString(i))>=1)
+						hatchingPotions.add(pot_array.getString(i));
 				}
 			}
 			user.setHatchingPotions(hatchingPotions);
@@ -206,9 +209,10 @@ public class ParserHelper {
 			JSONObject food_json = obj.getJSONObject(TAG_ITEMS_FOOD);
 			JSONArray food_array = food_json.names();
 			food = new ArrayList<String>();
-			for(int i = 0;i<food_array.length()-1;i++) {
-				if(food_json.getInt(food_array.getString(i))>=1) {
-					food.add(food_array.getString(i));
+			if(food_array!=null && food_array.length()>0) {
+				for(int i = 0;i<food_array.length()-1;i++) {
+					if(food_json.getInt(food_array.getString(i))>=1)
+						food.add(food_array.getString(i));
 				}
 			}
 			user.setFood(food);
