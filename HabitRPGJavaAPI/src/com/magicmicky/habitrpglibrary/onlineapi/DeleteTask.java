@@ -10,7 +10,7 @@ import com.magicmicky.habitrpglibrary.onlineapi.helper.ParseErrorException;
 import com.magicmicky.habitrpglibrary.onlineapi.helper.ParserHelper;
 
 public class DeleteTask extends WebServiceInteraction {
-	private final static String CMD = "user/task/";
+	private final static String CMD = "user/tasks/";
 	private final HabitItem habit;
 	
 	public DeleteTask(OnHabitsAPIResult callback, HostConfig config, HabitItem habit) {

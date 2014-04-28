@@ -701,7 +701,7 @@ public class ParserHelper {
 	}
 	public static boolean parseDeletedTask(JSONObject obj) throws ParseErrorException {
 		parseError(obj);
-		if(obj.has(TAG_TASK_DELETED)) {
+		if(obj.length()==0) {
  			return true;
 		} else {
 			throw new ParseErrorException(ParseErrorException.TASK_NOT_DELETED);
