@@ -14,6 +14,7 @@ public class Daily extends HabitItem{
 	private boolean[] repeat;
 	private String lastCompleted;
 	private int streak;
+	private Checklist checklist;
 	/**
 	 * Construct a daily based on all the information needed
 	 * @param id the id of the daily
@@ -25,19 +26,20 @@ public class Daily extends HabitItem{
 	 * @param repeat when does it repeat?
 	 */
 	public Daily(String id, String notes, Integer priority, String text,
-			double value, boolean completed, boolean[] repeat) {
+			double value, boolean completed, boolean[] repeat, Checklist list) {
 		super(id, notes, priority, text, value);
 		this.setCompleted(completed);
 		this.setRepeat(repeat);
+		this.setChecklist(list);
 	}
 	public Daily(String id, String notes, Integer priority, String text,
-			double value, boolean completed, boolean[] repeat, String lastCompleted) {
-		this(id, notes, priority, text, value,completed,repeat);
+			double value, boolean completed, boolean[] repeat, String lastCompleted, Checklist list) {
+		this(id, notes, priority, text, value,completed,repeat, list);
 		this.setLastCompleted(lastCompleted);
 	}
 	public Daily(String id, String notes, Integer priority, String text,
-			double value, boolean completed, boolean[] repeat, int streak, String lastCompleted) {
-		this(id, notes, priority, text, value,completed,repeat,lastCompleted);
+			double value, boolean completed, boolean[] repeat, int streak, String lastCompleted, Checklist list) {
+		this(id, notes, priority, text, value,completed,repeat,lastCompleted, list);
 		this.setStreak(streak);
 	}
 	public Daily() {
@@ -45,6 +47,7 @@ public class Daily extends HabitItem{
 		this.setCompleted(false);
 		boolean[] r = new boolean[7];
 		this.setRepeat(r);
+		this.setChecklist(new Checklist());
 	}
 	/**
 	 * @return if the daily is completed
@@ -72,6 +75,22 @@ public class Daily extends HabitItem{
 	public void setRepeat(boolean[] repeat) {
 		this.repeat = repeat;
 	}
+	/**
+	 * Retrieve the checklist
+	 * @return the checklist
+	 */
+	public Checklist getChecklist() {
+		return this.checklist;
+	}
+	/**
+	 * Sets the checklist
+	 * @param checklist the new checklist
+	 */
+	public void setChecklist(Checklist checklist) {
+		this.checklist = checklist;
+	}
+	
+	
 	@Override
 	protected String getType() {
 		return type.toString();

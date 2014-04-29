@@ -12,7 +12,7 @@ public class ParseErrorException extends HabitRPGException {
 	public static final int JSON_USER_LOOK_NOT_FOUND = 107;
 	public static final int JSON_USER_TAGS_NOT_FOUND = 108;
 	public static final int HABITRPG_DIRECTION_ANSWER_UNPARSABLE = 109;
-
+	public static final int JSON_CHECKLIST_UNPARSABLE = 110;
 	public static final int JSON_USER_HAS_NO_TASKS_TAGS = 120;
 	public static final int JSON_USER_HAS_NO_DAILIES_TAGS = 121;
 	public static final int JSON_USER_HAS_NO_TODOS_TAGS = 122;

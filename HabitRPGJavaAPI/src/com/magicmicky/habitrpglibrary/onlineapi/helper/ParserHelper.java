@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.magicmicky.habitrpglibrary.habits.*;
+import com.magicmicky.habitrpglibrary.habits.Checklist.ChecklistItem;
 
 public class ParserHelper {
 	private final static String TAG_ERR="err";
@@ -56,6 +57,10 @@ public class ParserHelper {
 		private static final String TAG_TASK_TAGS = "tags";
 		private static final String TAG_TASK_HISTORY="history";
 			private static final String TAG_TASK_HISTORY_DATE = "date";
+	private static final String TAG_CHECKLIST= "checklist";
+		private static final String TAG_CHECKLIST_ID = "id";
+		private static final String TAG_CHECKLIST_TEXT = "text";
+		private static final String TAG_CHECKLIST_COMPLETED = "completed";
 	private static final String TAG_PROFILE = "profile";
 		private static final String TAG_PROFILE_NAME="name";
 	private static final String TAG_PREFS = "preferences";
@@ -565,13 +570,19 @@ public class ParserHelper {
 			it.setRepeat(repeats);
 			it.setStreak(obj.has(TAG_TASK_STREAK) ? obj.getInt(TAG_TASK_STREAK) : 0);
 			it.setLastCompleted(lastday);
+			if(obj.has(TAG_CHECKLIST)){
+				JSONArray clArray = obj.getJSONArray(TAG_CHECKLIST);
+				if(clArray.length()>0) {
+					Checklist cl = parseChecklist(clArray);
+					it.setChecklist(cl);
+				}
+			}
 			return it;
 		}  catch (JSONException e) {
 			e.printStackTrace();
 			ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_DAILY_UNPARSABLE);
 			throw(ex);
 		}
-
 	}
 	private static ToDo parseTodo(JSONObject obj) throws ParseErrorException {
 		try {
@@ -579,6 +590,13 @@ public class ParserHelper {
 			parseBase(it, obj);
 			it.setCompleted(obj.has(TAG_TASK_COMPLETED) ? obj.getBoolean(TAG_TASK_COMPLETED) : false);
 			it.setDate(obj.has(TAG_TASK_DATE) ? obj.getString(TAG_TASK_DATE) : null);
+			if(obj.has(TAG_CHECKLIST)){
+				JSONArray clArray = obj.getJSONArray(TAG_CHECKLIST);
+				if(clArray.length()>0) {
+					Checklist cl = parseChecklist(clArray);
+					it.setChecklist(cl);
+				}
+			}
 			return it;
 		}  catch (JSONException e) {
 			e.printStackTrace();
@@ -597,6 +615,26 @@ public class ParserHelper {
 			ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_REWARD_UNPARSABLE);
 			throw(ex);
 		}
+	}
+	
+	private static Checklist parseChecklist(JSONArray obj) throws ParseErrorException {
+		Checklist cl = new Checklist();
+		try {
+			for(int i=0;i<obj.length();i++) {
+				JSONObject current_item = obj.getJSONObject(i);
+				String id = current_item.getString(TAG_CHECKLIST_ID);
+				String text = current_item.getString(TAG_CHECKLIST_TEXT);
+				boolean cmplt = current_item.getBoolean(TAG_CHECKLIST_COMPLETED);
+				ChecklistItem it = new ChecklistItem(id, text,cmplt);
+				cl.addItem(it);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			ParseErrorException ex = new ParseErrorException(ParseErrorException.JSON_CHECKLIST_UNPARSABLE);
+			throw(ex);
+		}
+		
+		return cl;
 	}
 	
 	private static <T extends HabitItem> void parseBase(T it, JSONObject habit) throws JSONException {
@@ -638,7 +676,11 @@ public class ParserHelper {
 	}
 	
 	
-	
+	/**
+	 * Throws an exception if an error is detected
+	 * @param obj
+	 * @throws ParseErrorException
+	 */
 	public static void parseError(JSONObject obj) throws ParseErrorException{
 		if(obj.has(TAG_ERR)) {
 			try {
