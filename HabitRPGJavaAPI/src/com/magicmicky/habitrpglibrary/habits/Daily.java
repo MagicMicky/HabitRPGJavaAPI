@@ -2,6 +2,10 @@ package com.magicmicky.habitrpglibrary.habits;
 
 import java.text.SimpleDateFormat;
 
+import org.json.JSONObject;
+
+import com.magicmicky.habitrpglibrary.habits.Checklist.ChecklistItem;
+
 
 /**
  * A daily item. It contains the item called "Daily" on the website
@@ -110,7 +114,20 @@ public class Daily extends HabitItem{
 			}
 			json.append("\"streak\":").append(this.getStreak()).append(",");
 			json.append("\"completed\":" + (this.isCompleted() ? "true":"false"))
-		.append("}");
+			.append(",");
+			if(this.getChecklist() != null && !this.getChecklist().getItems().isEmpty()) {
+				json.append("\"checklist\":[");
+				for(ChecklistItem item : this.getChecklist().getItems()) {
+					json.append("{")
+						.append("\"text\":").append(JSONObject.quote(item.getText())).append(",")
+						.append("\"id\":").append(JSONObject.quote(item.getId())).append(",")
+						.append("\"completed\":").append(item.isCompleted() ? "true" : "false")
+					.append("},");
+				}
+				json.deleteCharAt(json.length()-1);
+				json.append("]");
+			}
+			json.append("}");
 		return json.toString();
 	}
 	/**

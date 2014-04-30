@@ -2,6 +2,10 @@ package com.magicmicky.habitrpglibrary.habits;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.magicmicky.habitrpglibrary.habits.Checklist.ChecklistItem;
+
 
 /**
  * A ToDo task that you can see of the website
@@ -92,11 +96,24 @@ public class ToDo extends HabitItem{
 	public String getJSONString() {
 		StringBuilder json = new StringBuilder()
 		.append("{")
-			.append(super.getJSONBaseString());
-			if(this.getDate()!=null && this.getDate()!="")
-				json.append("\"date\":\"").append(this.getDate()).append("\",");
-			json.append("\"completed\":").append((this.isCompleted() ? "true":"false"))
-		.append("}" );
+		.append(super.getJSONBaseString());
+		if(this.getDate()!=null && this.getDate()!="")
+			json.append("\"date\":\"").append(this.getDate()).append("\",");
+		json.append("\"completed\":").append((this.isCompleted() ? "true":"false"))
+		.append(",");
+		if(this.getChecklist() != null && !this.getChecklist().getItems().isEmpty()) {
+			json.append("\"checklist\":[");
+			for(ChecklistItem item : this.getChecklist().getItems()) {
+				json.append("{")
+					.append("\"text\":").append(JSONObject.quote(item.getText())).append(",")
+					.append("\"id\":").append(JSONObject.quote(item.getId())).append(",")
+					.append("\"completed\":").append(item.isCompleted() ? "true" : "false")
+					.append("},");
+			}
+			json.deleteCharAt(json.length()-1);
+			json.append("]");
+		}
+		json.append("}" );
 		return json.toString();
 	}
 
