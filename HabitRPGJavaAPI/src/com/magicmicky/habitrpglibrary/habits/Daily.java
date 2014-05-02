@@ -113,10 +113,10 @@ public class Daily extends HabitItem{
 				json.append("},");
 			}
 			json.append("\"streak\":").append(this.getStreak()).append(",");
-			json.append("\"completed\":" + (this.isCompleted() ? "true":"false"))
-			.append(",");
+			json.append("\"completed\":" + (this.isCompleted() ? "true":"false"));
+			json.append(",")
+			.append("\"checklist\":[");
 			if(this.getChecklist() != null && !this.getChecklist().getItems().isEmpty()) {
-				json.append("\"checklist\":[");
 				for(ChecklistItem item : this.getChecklist().getItems()) {
 					json.append("{")
 						.append("\"text\":").append(JSONObject.quote(item.getText())).append(",")
@@ -125,9 +125,9 @@ public class Daily extends HabitItem{
 					.append("},");
 				}
 				json.deleteCharAt(json.length()-1);
-				json.append("]");
 			}
-			json.append("}");
+			json.append("]")
+			.append("}");
 		return json.toString();
 	}
 	/**

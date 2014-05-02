@@ -38,6 +38,9 @@ public static class ChecklistItem {
 	private String text;
 	private String id;
 	private boolean completed;
+	public ChecklistItem() {
+		this(null,null);
+	}
 	public ChecklistItem(String id, String text) {
 		this(text,id,false);
 	}
